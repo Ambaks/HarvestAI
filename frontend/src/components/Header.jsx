@@ -39,7 +39,13 @@ const Header = () => {
     const handleDashClick = (e) => {
         e.preventDefault(); // Prevent default link behavior
         if (user) {
-        navigate("/dashboard"); // Redirect to dashboard if logged in
+            if (user.role === "admin") {
+                navigate("/admin-dashboard");
+              } else if (user.role === "farmer") {
+                navigate("/farmer-dashboard");
+              } else if (user.role === "exporter") {
+                navigate("/exporter-dashboard");
+              } // Redirect to dashboard if logged in
         } else {
         navigate("/login"); // Redirect to login if not logged in
         }

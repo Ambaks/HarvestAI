@@ -7,15 +7,27 @@ import { useNavigate } from "react-router-dom";
 import { login, register } from "../api/authService";
 import { UserContext } from "../context/UserContext";
 
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");    //setting first and last names here, use them below and run. 
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
   const [error, setError] = useState(null); // State for error messages
   const navigate = useNavigate();
   const [action, setAction] = useState("");
-  const { setUser } = useContext(UserContext); // Access setUser from context
+  const { user, setUser } = useContext(UserContext); // Access setUser from context
+
+  if (user) {
+    if (user.role === "admin") {
+        navigate("/admin-dashboard");
+      } else if (user.role === "farmer") {
+        navigate("/farmer-dashboard");
+      } else if (user.role === "exporter") {
+        navigate("/exporter-dashboard");
+      } // Redirect to dashboard if logged in
+  }
 
   useEffect(() => {
       const validateSession = async () => {
@@ -46,7 +58,15 @@ const Login = () => {
       // Call login API and get full user info.
       const { user_info } = await login(email, password);
       setUser(user_info); // Save full user info to context.
-      navigate("/dashboard");
+      if (user_info.role === "admin") {
+        navigate("/admin-dashboard");
+      } else if (user_info.role === "farmer") {
+        navigate("/farmer-dashboard");
+      } else if (user_info.role === "exporter") {
+        navigate("/exporter-dashboard");
+      } else {
+        alert("User has no role.");
+      }
     } catch (error) {
       console.error("Login error:", error);
       setError("Invalid username or password");
@@ -56,7 +76,7 @@ const Login = () => {
   const handleRegisterSubmit = async (e) => {
     e.preventDefault(); // Prevent the form from refreshing the page
     try {
-      await register(first_name, last_name, email, password); // Call the register function
+      await register(first_name, last_name, email, password, role); // Call the register function
     } catch (error) {
       setError(error.response?.data?.detail || "Registration failed"); // Display a meaningful error message
     }
@@ -129,6 +149,15 @@ const Login = () => {
               <input type="password" placeholder="Password:" onChange={(e) => setPassword(e.target.value)} required />
               <FaLock className={styles.icon} />
             </div>
+
+            <div className={styles["input-box"]}>
+              <select className={styles["transparent-select"]} placeholder="Pick your role:" onChange={(e) => setRole(e.target.value)} required>
+                <option value="">Pick your role here:</option>
+                <option value="farmer">Farmer</option>
+                <option value="exporter">Exporter</option>
+              </select>
+            </div>
+
             <div className={styles["remember-forgot"]}>
               <label>
                 <input type="checkbox" required/> I agree to the terms & conditions.

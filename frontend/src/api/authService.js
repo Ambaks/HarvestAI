@@ -15,11 +15,11 @@ export const login = async (email, password) => {
   }
 };
 
-export const register = async (firstName, lastName, email, password) => {
+export const register = async (firstName, lastName, email, password, role) => {
   try {
     const response = await axios.post(
       `${API_URL}/auth/register`,
-      { first_name: firstName, last_name: lastName, email, password }
+      { first_name: firstName, last_name: lastName, email, password, role }
     );
     return response.data; // Expect { message: "User registered successfully" }
   } catch (error) {

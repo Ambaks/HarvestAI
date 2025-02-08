@@ -150,3 +150,25 @@ form .register-link {
 .register-link p a:hover {
     text-decoration: underline;
 }
+
+.transparent-select {
+    background: transparent; /* Make the background transparent */
+    color: inherit; /* Inherit text color */
+    font-size: inherit; /* Inherit font size */
+    cursor: pointer; /* Show pointer cursor on hover */
+    height: 35px;
+    width: 330px;
+  }
+  
+  /* Optional: Style the dropdown arrow (if needed) */
+  .input-box {
+    position: relative;
+  }
+  
+  .input-box::after {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; /* Ensure clicks go to the select element */
+  }

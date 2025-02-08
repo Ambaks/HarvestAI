@@ -3,10 +3,10 @@ uvicorn
 sqlalchemy
 pydantic
 pydantic[email]
-sqlite
+pydantic_settings
 python-dotenv
-pybluez
 bcrypt
+pybluez
 passlib[bcrypt]
 bleak
 python-jose

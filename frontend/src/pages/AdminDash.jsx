@@ -76,6 +76,7 @@ const AdminDash = () => {
       <p>Email: {user.email}</p>
       <p>First Name: {user.first_name}</p>
       <p>Last Name: {user.last_name}</p>
+      <p>Role: {user.role}</p>
     </div>
   );
 };

@@ -10,6 +10,7 @@ export const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null); // Holds user information
   const [loading, setLoading] = useState(true); // Tracks session validation status
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate(); // Initialize navigation for redirection
 
   useEffect(() => {
@@ -18,11 +19,13 @@ export const UserProvider = ({ children }) => {
         // Validate session using the HttpOnly cookie
         const response = await axios.get(`${API_BASE_URL}/auth/validate`, {
           withCredentials: true, // Ensure cookies are sent
-        });
+      });
+        setIsAuthenticated(true);
         setUser(response.data); // Set user info in the context
       } catch (error) {
         console.error("Session validation failed:", error.response?.data);
         setUser(null); // Clear user info on validation failure
+        setIsAuthenticated(false);
        
       } finally {
         setLoading(false); // Stop loading state after validation
@@ -54,7 +57,7 @@ export const UserProvider = ({ children }) => {
   }
 
   return (
-    <UserContext.Provider value={{ user, setUser, logout }}>
+    <UserContext.Provider value={{ user, isAuthenticated, logout }}>
       {children}
     </UserContext.Provider>
   );

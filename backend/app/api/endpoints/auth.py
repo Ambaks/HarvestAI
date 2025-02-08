@@ -57,7 +57,8 @@ def login(request: LoginRequest, response: Response, db: Session = Depends(get_d
             "id": user.id,
             "first_name": user.first_name,
             "last_name": user.last_name,
-            "email": user.email
+            "email": user.email,
+            "role": user.role
         }
     }
 
@@ -83,6 +84,7 @@ def get_current_user(
         first_name=user_record.first_name,
         last_name=user_record.last_name,
         email=user_record.email,
+        role=user_record.role
     )
 
 @router.post("/auth/logout")
