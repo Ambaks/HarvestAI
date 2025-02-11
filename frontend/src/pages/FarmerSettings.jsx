@@ -1,9 +1,11 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
+import { useParams } from "react-router-dom";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; 
 
 const FarmerSettings = () => {
+    const { user_id } = useParams();
     const { user, setUser } = useContext(UserContext);
     const [editingField, setEditingField] = useState(null);
     const [tempValue, setTempValue] = useState("");
@@ -26,7 +28,7 @@ const FarmerSettings = () => {
         try {
             const updatedField = { [editingField]: tempValue }; // Send only updated field
     
-            const response = await fetch(`${API_BASE_URL}/users/${user.email}`, {
+            const response = await fetch(`${API_BASE_URL}/users/${user.user_id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

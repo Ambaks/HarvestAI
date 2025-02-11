@@ -14,7 +14,7 @@ def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Username already exists")
     return create_user(db, user)
 
-@router.get("/users/{email}",  response_model=UserOut)
+@router.get("/users/{user_id}",  response_model=UserOut)
 def read_user(email: str, request: Request, db: Session = Depends(get_db)):
     token = request.cookies.get("access_token")
     if not token:

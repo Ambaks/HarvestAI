@@ -6,9 +6,15 @@ import { RxGear } from "react-icons/rx";
 import { TbBuildingCircus } from "react-icons/tb";
 import { FaMoneyCheck } from "react-icons/fa";
 import { GiWheat } from "react-icons/gi";
+import { useNavigate } from "react-router-dom";
+import {useFetchUser} from "../api/authService";
+
 
 
 const FarmerSidebar = () => {
+  const navigate = useNavigate();
+  const { user } = useFetchUser();
+
   return (
     <div className='sidebar fixed top-0 left-0 bg-[#f1f1f1] w-[14%] h-full border-r border-[rgba(0,0,0,0.1)] py-2 px-2'>
       <div className='py-2 w-full'>
@@ -24,7 +30,7 @@ const FarmerSidebar = () => {
                 <RxDashboard className="text-[18px]"/> <span>Dashboard</span>
             </Button>
 
-            <Button className="w-full !capitalize !justify-start flex gap-3 text-[14px] text-[rgba(0,0,0,0.8)] font-[500] items-center" href="/farmer-dashboard/mycrops"> 
+            <Button className="w-full !capitalize !justify-start flex gap-3 text-[14px] text-[rgba(0,0,0,0.8)] font-[500] items-center" href={`/farmer-dashboard/mycrops/${user.id}`}> 
                 <GiWheat className="text-[18px]"/> <span>My Crops</span>
             </Button>
 
@@ -36,7 +42,7 @@ const FarmerSidebar = () => {
                 <TbBuildingCircus className="text-[18px]"/> <span>Marketplace</span>
             </Button>
 
-            <Button className="w-full !capitalize !justify-start flex gap-3 text-[14px] text-[rgba(0,0,0,0.8)] font-[500] items-center" href="/farmer-dashboard/settings"> 
+            <Button className="w-full !capitalize !justify-start flex gap-3 text-[14px] text-[rgba(0,0,0,0.8)] font-[500] items-center" href={`/farmer-dashboard/settings/${user.id}`}> 
                 <RxGear className="text-[18px]"/> <span>Settings</span>
             </Button>
         </li>

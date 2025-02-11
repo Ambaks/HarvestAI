@@ -1,31 +1,12 @@
-import React, { useEffect, useContext } from "react";
-import axios from "axios";
-import { UserContext } from "../context/UserContext";
+import React from "react";
 import FarmerDashboardBoxes from "../components/DashboardBoxes";
 import { LineChart } from '@mui/x-charts/LineChart';
 import { Button } from "@mui/material";
+import {useFetchUser} from "../api/authService";
 
 const FarmerDash = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useFetchUser();
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      console.log("Validating session...");
-      try {
-        // Fetch user info from the backend if not already set
-        if (!user) {
-          const response = await axios.get("http://localhost:8000/auth/validate", { withCredentials: true });
-          console.log("Validation response:", response.data);
-          setUser(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error.response?.data);
-        setUser(null); // Clear user state on error
-      }
-    };
-
-    fetchUserData();
-  }, [setUser]);
 
   if (!user) {
     return <div>Loading user data or not logged in...</div>;
@@ -39,7 +20,7 @@ const FarmerDash = () => {
           <h1 className="text-[30px] font-bold leading-10">Good morning,<br/> {user.first_name}</h1> 
           <p className="mt-3 font-[100] text-[13px] text-gray-500">Welcome back to your control center.</p>
           <div className="py-5">
-            <Button className="rounded-lg bg-black shadow-sm shadow-black text-blue-600">
+            <Button className="rounded-lg bg-black shadow-sm shadow-black text-blue-600" href={`/farmer-dashboard/mycrops/${user.id}`}>
                 Add Crops
             </Button>
           </div>

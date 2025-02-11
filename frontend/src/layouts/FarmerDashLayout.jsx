@@ -23,8 +23,8 @@ const FarmerDashLayout = ({ isSidebarOpen, setIsSidebarOpen }) => {
         >
         <Routes>
             <Route path="/" element={<FarmerDash />} />
-            <Route path="/mycrops" element={<FarmerCrops />} />
-            <Route path="/settings" element={<FarmerSettings />} />
+            <Route path="/mycrops/:user_id" element={<FarmerCrops />} />
+            <Route path="/settings/:user_id" element={<FarmerSettings />} />
         </Routes>
         </div>
       </div>

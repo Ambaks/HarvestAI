@@ -1,5 +1,8 @@
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useContext } from "react";
+import { UserContext } from "../context/UserContext";
+
+
 
 const API_URL = 'http://localhost:8000';
 
@@ -28,6 +31,10 @@ export const register = async (firstName, lastName, email, password, role) => {
   }
 };
 
+
+
+
+/*Logout function */
 export const logout = async () => {
   try {
     const response = await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
@@ -37,3 +44,28 @@ export const logout = async () => {
   }
 };
 
+
+/* Function to get user data from context */
+export const useFetchUser = () => {
+  const { user, setUser } = useContext(UserContext);
+
+  useEffect(() => {
+      const fetchUserData = async () => {
+          console.log("Validating session...");
+          try {
+              if (!user) {
+                  const response = await axios.get("http://localhost:8000/auth/validate", { withCredentials: true });
+                  console.log("Validation response:", response.data);
+                  setUser(response.data);
+              }
+          } catch (error) {
+              console.error("Error fetching user data:", error.response?.data);
+              setUser(null);
+          }
+      };
+
+      fetchUserData();
+  }, [setUser]);
+
+  return { user, setUser }; // Return user state so it can be accessed in components
+};
