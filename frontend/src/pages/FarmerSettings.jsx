@@ -28,7 +28,7 @@ const FarmerSettings = () => {
         try {
             const updatedField = { [editingField]: tempValue }; // Send only updated field
     
-            const response = await fetch(`${API_BASE_URL}/users/${user.user_id}`, {
+            const response = await fetch(`${API_BASE_URL}/users/${user_id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

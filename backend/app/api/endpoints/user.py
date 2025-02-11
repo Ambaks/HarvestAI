@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from services.auth import verify_access_token
-from crud.user import read_user, create_user, update_user, delete_user
+from crud.user import read_user, create_user, update_user, delete_user, read_user_by_id
 from schemas.user import UserOut, UserUpdate, UserCreate, UserBase
 from api.dependencies import get_db
+from typing import Dict, Any
 
 router = APIRouter()
 
@@ -15,7 +16,7 @@ def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
     return create_user(db, user)
 
 @router.get("/users/{user_id}",  response_model=UserOut)
-def read_user(email: str, request: Request, db: Session = Depends(get_db)):
+def read_user(user_id: str, request: Request, db: Session = Depends(get_db)):
     token = request.cookies.get("access_token")
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
@@ -26,11 +27,11 @@ def read_user(email: str, request: Request, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
     # Check if the token's subject matches the requested email
-    if username != email:
+    if username != user_id:
         raise HTTPException(status_code=403, detail="Access forbidden: Cannot fetch data for other users")
 
     # Retrieve user data
-    user = read_user(db, email)
+    user = read_user(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -38,22 +39,25 @@ def read_user(email: str, request: Request, db: Session = Depends(get_db)):
 
 
 
-@router.put("/users/{email}", response_model=UserUpdate)
-def update_existing_user(email: str, user_update: UserUpdate, db: Session = Depends(get_db)):
+@router.put("/users/{user_id}", response_model=UserUpdate)
+def update_existing_user(user_id: str, user_update: Dict[str, Any], db: Session = Depends(get_db)):
     # Get the user from the database
-    db_user = read_user(db, email)
+    db_user = read_user_by_id(db, user_id)
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
 
     # Update only the fields that are provided
-    update_data = user_update.dict(exclude_unset=True)  # Remove None values
+    update_data = {k: v for k, v in user_update.items() if v is not None}
+
     if not update_data:
         raise HTTPException(status_code=400, detail="No valid fields to update.")
 
     # Perform the update in the database
     updated_user = update_user(db, db_user, update_data)
 
-    return updated_user  # Return the updated user
+    refreshed_user = read_user_by_id(db, user_id)
+
+    return refreshed_user  # Return the updated user
 
 @router.delete("/users/{email}")
 def delete_existing_user(user: UserBase, db: Session = Depends(get_db)):

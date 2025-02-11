@@ -10,6 +10,8 @@ class UserBase(BaseModel):
 
 class UserOut(UserBase):
     id: UUID4
+    phone: str
+    dob: str
 
     class Config:
         from_attributes = True

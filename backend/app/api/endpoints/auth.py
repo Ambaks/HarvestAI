@@ -76,6 +76,8 @@ def get_current_user(
         first_name=user_record.first_name,
         last_name=user_record.last_name,
         email=user_record.email,
+        phone=user_record.phone,
+        dob=user_record.dob,
         role=user_record.role
         
     )
