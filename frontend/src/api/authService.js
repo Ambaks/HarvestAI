@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = 'http://localhost:8000';
 
@@ -29,8 +30,10 @@ export const register = async (firstName, lastName, email, password, role) => {
 
 export const logout = async () => {
   try {
-    await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
+    const response = await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
+    return response.data; // Ensure the function returns a result
   } catch (error) {
-    throw error.response?.data?.message || "Logout failed. Please try again.";
+    throw new Error(error.response?.data?.message || "Logout failed. Please try again.");
   }
 };
+

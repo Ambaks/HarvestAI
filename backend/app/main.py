@@ -16,8 +16,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],  # Allows all origins
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all HTTP methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["GET", "POST", "PUT", ],  # Allows needed HTTP methods
+    allow_headers=["Content-Type", "Authorization"],  # Allows all headers
 )
 
 # Include the routers for various resources (Harvest, Farmers, Exporters, Transactions)

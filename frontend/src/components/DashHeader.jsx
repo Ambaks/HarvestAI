@@ -1,4 +1,5 @@
-import React from "react";
+import React, {useContext} from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { RiMenu2Line, RiCloseLine } from "react-icons/ri";
 import { IconButton, Badge, Menu, MenuItem, Divider } from "@mui/material";
@@ -6,8 +7,9 @@ import { styled } from "@mui/material";
 import { FaRegBell, FaRegUser } from "react-icons/fa";
 import { IoMdLogOut } from "react-icons/io";
 import { PiGearFineBold } from "react-icons/pi";
-import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
+import { logout } from "../api/authService";
+
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -17,6 +19,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     padding: "0 4px",
   },
 }));
+
 
 const DashHeader = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const { user } = useContext(UserContext);
@@ -107,6 +110,15 @@ const DashHeader = ({ isSidebarOpen, setIsSidebarOpen }) => {
                     {user.first_name} {user.last_name}
                   </h3>
                   <p className="text-[12px] font-[400] opacity-70">{user.email}</p>
+                </div>
+              </div>
+            </MenuItem>
+
+            <MenuItem onClick={logout}
+                   className="!bg-white">
+              <div className="flex items-center gap-3">
+                <div className="info cursor-pointer">
+                  <h3>Logout</h3>
                 </div>
               </div>
             </MenuItem>

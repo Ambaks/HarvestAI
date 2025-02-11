@@ -4,7 +4,9 @@ import Homepage from "./pages/Homepage";
 import Login from "./pages/Login";
 import PrivateRoute from "./utils/PrivateRoute";
 import AdminDashboardLayout from "./layouts/AdminDashboardLayout";
-import { UserContext } from "./context/UserContext";
+import FarmerDashLayout from "./layouts/FarmerDashLayout";
+import { UserContext, UserProvider } from "./context/UserContext";
+import FarmerCrops from "./pages/FarmerCrops";
 
 const App = () => {
 
@@ -12,6 +14,7 @@ const App = () => {
   const { isAuthenticated, user, loading } = useContext(UserContext);
 
   return (
+  <UserProvider>
     <Routes>
 
       <Route path="/" element={<Homepage />} />
@@ -51,7 +54,7 @@ const App = () => {
           element={
             <PrivateRoute>
                 <div className="bg-[#fff]">
-                <AdminDashboardLayout isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}/>
+                <FarmerDashLayout isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}/>
                 </div>
             </PrivateRoute>
           }
@@ -67,8 +70,10 @@ const App = () => {
             </PrivateRoute>
           }
         />
+        
 
     </Routes>
+   </UserProvider>
   );
 };
 

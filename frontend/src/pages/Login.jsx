@@ -1,48 +1,50 @@
 import { FaLock, FaUser } from "react-icons/fa";
-import React, { useContext,useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import styles from "../LoginRegister.module.css"; // Import the CSS module
 import HeaderBlank from "../components/HeaderBlank";
-
 import { useNavigate } from "react-router-dom";
 import { login, register } from "../api/authService";
 import { UserContext } from "../context/UserContext";
+import axios from 'axios';
 
 
 const Login = () => {
+  const  {user, setUser}  = useContext(UserContext);
   const [email, setEmail] = useState("");
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");    //setting first and last names here, use them below and run. 
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [error, setError] = useState(null); // State for error messages
-  const navigate = useNavigate();
   const [action, setAction] = useState("");
-  const { user, setUser } = useContext(UserContext); // Access setUser from context
 
-  if (user) {
-    if (user.role === "admin") {
-        navigate("/admin-dashboard");
-      } else if (user.role === "farmer") {
-        navigate("/farmer-dashboard");
-      } else if (user.role === "exporter") {
-        navigate("/exporter-dashboard");
-      } // Redirect to dashboard if logged in
-  }
+  const navigate = useNavigate();
 
   useEffect(() => {
-      const validateSession = async () => {
-        try {
-          const response = await axios.get("/auth/validate", { withCredentials: true });
-          setUser(response.data);
-        } catch (error) {
-          console.error("Session validation failed:", error.response?.data);
-          setUser(null);
+    const validateSession = async () => {
+      try {
+        const response = await axios.get("/auth/validate", { withCredentials: true });
+        setUser(response.data);
+      } catch (error) {
+        console.error("Session validation failed:", error.response?.data);
+        setUser(null);
+      }
+    };
+    validateSession();
+  }, [setUser]);
+
+
+  useEffect(() => {
+      if (user) {
+        if (user.role === "admin") {
+          navigate("/admin-dashboard");
+        } else if (user.role === "farmer") {
+          navigate("/farmer-dashboard");
+        } else if (user.role === "exporter") {
+          navigate("/exporter-dashboard");
         }
-      };
-  
-      validateSession();
-    }, []);
-  
+      }
+    }, [user, navigate]);
 
   const registerLink = () => {
     setAction("active");
@@ -58,15 +60,6 @@ const Login = () => {
       // Call login API and get full user info.
       const { user_info } = await login(email, password);
       setUser(user_info); // Save full user info to context.
-      if (user_info.role === "admin") {
-        navigate("/admin-dashboard");
-      } else if (user_info.role === "farmer") {
-        navigate("/farmer-dashboard");
-      } else if (user_info.role === "exporter") {
-        navigate("/exporter-dashboard");
-      } else {
-        alert("User has no role.");
-      }
     } catch (error) {
       console.error("Login error:", error);
       setError("Invalid username or password");

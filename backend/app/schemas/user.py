@@ -6,10 +6,11 @@ class UserBase(BaseModel):
     first_name: str
     last_name: str
     email: EmailStr
-    role: str
+    
 
 class UserOut(UserBase):
     id: UUID4
+    role: str
 
     class Config:
         from_attributes = True
@@ -21,8 +22,10 @@ class UserUpdate(UserBase):
     first_name: str | None = None
     last_name: str | None = None
     email: EmailStr | None = None
+    dob: str | None = None
     password: str | None = None
-    role: str 
+    phone: str | None = None
+    
 
     class Config:
         from_attributes = True

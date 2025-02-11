@@ -17,17 +17,12 @@ def create_user(db: Session, user: RegisterRequest):
     db.refresh(db_user)
     return db_user
 
-def update_user(db: Session, db_user: User, user_update: UserUpdate):
-    if user_update.first_name:
-        db_user.first_name = user_update.first_name
-    if user_update.last_name:
-        db_user.last_name = user_update.last_name
-    if user_update.email:
-        db_user.email = user_update.email
-    if user_update.password:
-        db_user.hashed_password = get_password_hash(user_update.password)
+def update_user(db: Session, db_user: User, update_data: dict):
+    for key, value in update_data.items():
+        setattr(db_user, key, value)  # Dynamically update fields
+
     db.commit()
-    db.refresh(db_user)
+    db.refresh(db_user)  # Refresh to get updated data from DB
     return db_user
 
 def delete_user(db: Session, db_user: User):

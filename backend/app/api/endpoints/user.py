@@ -39,11 +39,21 @@ def read_user(email: str, request: Request, db: Session = Depends(get_db)):
 
 
 @router.put("/users/{email}", response_model=UserUpdate)
-def update_existing_user(user: UserBase, user_update: UserUpdate, db: Session = Depends(get_db)):
-    db_user = read_user(db, user.email)
+def update_existing_user(email: str, user_update: UserUpdate, db: Session = Depends(get_db)):
+    # Get the user from the database
+    db_user = read_user(db, email)
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
-    return update_user(db, db_user, user_update)
+
+    # Update only the fields that are provided
+    update_data = user_update.dict(exclude_unset=True)  # Remove None values
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No valid fields to update.")
+
+    # Perform the update in the database
+    updated_user = update_user(db, db_user, update_data)
+
+    return updated_user  # Return the updated user
 
 @router.delete("/users/{email}")
 def delete_existing_user(user: UserBase, db: Session = Depends(get_db)):
