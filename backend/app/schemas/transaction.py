@@ -2,16 +2,24 @@
 from pydantic import BaseModel
 
 class TransactionBase(BaseModel):
-    harvest_id: int
-    farmer_id: int
-    exporter_id: int
-    amount: int
+    harvest_id: str
+    farmer_id: str
+    exporter_id: str
+    quantity: float
+    quality: str
+    crop_name: str
+    price_per_kg: float
+    status: str
+    dollar_amount: float
+    date: str
+    
 
 class TransactionCreate(TransactionBase):
-    pass
+    id: str
+
 
 class TransactionRead(TransactionBase):
-    id: int
+    id: str
 
     class Config:
         orm_mode = True
