@@ -6,6 +6,9 @@ import {useFetchUser} from "../api/authService";
 
 const FarmerDash = () => {
   const { user } = useFetchUser();
+  
+  const earningsData = user.earnings || []; // Assuming it's an array
+  const timeLabels = earningsData.map((_, index) => `Day ${index + 1}`); // Generate simple labels
 
   if (!user) {
     return <div>Loading user data or not logged in...</div>;

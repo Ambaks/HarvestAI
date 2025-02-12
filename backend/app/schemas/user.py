@@ -1,5 +1,5 @@
 import uuid
-from pydantic import BaseModel, EmailStr, UUID4
+from pydantic import BaseModel, EmailStr
 
 
 class UserBase(BaseModel):
@@ -9,9 +9,10 @@ class UserBase(BaseModel):
     role: str
 
 class UserOut(UserBase):
-    id: UUID4
+    id: str
     phone: str | None = None
     dob: str    | None = None
+    earnings: float | None = None
 
     class Config:
         from_attributes = True
@@ -34,3 +35,5 @@ class UserUpdate(UserBase):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+

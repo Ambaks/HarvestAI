@@ -40,3 +40,4 @@ def update_user(db: Session, db_user: User, update_data: Dict[str, Any]):
 def delete_user(db: Session, db_user: User):
     db.delete(db_user)
     db.commit()
+
