@@ -1,19 +1,18 @@
 # Define Harvest schemas
+from uuid import UUID
 from pydantic import BaseModel
 from typing import Optional
+from datetime import date
 
 class HarvestBase(BaseModel):
-    id: int
-    farmer_id: int
+    farmer_id: str
     crop_name: str
     quantity: float
     quality: str
-    buyer_id: int
     date: str
-    quantity: int
 
 class HarvestCreate(HarvestBase):
-    pass
+    id: int
 
 class HarvestRead(HarvestBase):
     id: int

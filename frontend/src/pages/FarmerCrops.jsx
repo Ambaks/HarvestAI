@@ -1,23 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useFetchUser } from "../api/authService";
 
 const FarmerCrops = () => {
   const { user } = useFetchUser();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [manualWeight, setManualWeight] = useState("");
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [Weight, setWeight] = useState("");
   const [harvestDate, setHarvestDate] = useState(new Date().toISOString().split("T")[0]);
   const [cropQuality, setCropQuality] = useState("Grade A");
+  const [cropName, setCropName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
+  const [crops, setCrops] = useState([]);
+
+
+  useEffect(() => {
+    const fetchCrops = async () => {
+        try {
+            const response = await axios.get("http://localhost:8000/harvests/crops/", {
+                params: { farmer_id: user?.id }, // Ensure user.id is available
+            });
+            console.log("API Response Data:", response.data);
+            setCrops(response.data);
+        } catch (error) {
+            console.error("Error fetching crops:", error);
+        }
+    };
+
+    if (user?.id) {
+        fetchCrops();
+    }
+}, [user?.id]);
+
 
   const handleSubmit = async () => {
-    if (!manualWeight) {
+    if (!Weight) {
       setError("Please enter a valid weight.");
       return;
     }
@@ -26,28 +44,26 @@ const FarmerCrops = () => {
     setError(null);
 
     const formData = new FormData();
-    formData.append("user_id", user?.id); // Ensure the user ID is included
-    formData.append("manual_weight", manualWeight);
-    formData.append("harvest_date", harvestDate);
-    formData.append("crop_quality", cropQuality);
-    if (selectedFile) {
-      formData.append("crop_image", selectedFile);
-    }
+    formData.append("farmer_id", user?.id); // Ensure the user ID is included
+    formData.append("quantity", Weight);
+    formData.append("date", harvestDate);
+    formData.append("crop_name", cropName);
+    formData.append("quality", cropQuality);
+
 
     try {
       const response = await axios.post(
-        "https://your-backend-api.com/api/crops/", // Replace with your actual backend API
+        "http://localhost:8000/harvests/crops/new", // Replace with your actual backend API
         formData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: { "Content-Type": "application/json" },
           withCredentials: true, // Ensure HTTP-only cookies are sent
         }
       );
 
       console.log("Harvest submitted successfully:", response.data);
       setIsModalOpen(false);
-      setManualWeight("");
-      setSelectedFile(null);
+      setWeight("");
     } catch (err) {
       console.error("Error submitting harvest:", err);
       setError("Failed to submit harvest. Please try again.");
@@ -80,16 +96,23 @@ const FarmerCrops = () => {
                 ✏️ Manual Entry:
                 <input
                   type="number"
-                  value={manualWeight}
-                  onChange={(e) => setManualWeight(e.target.value)}
+                  value={Weight}
+                  onChange={(e) => setWeight(e.target.value)}
                   className="border p-2 w-full rounded"
                   placeholder="Enter weight in kg"
                   required
                 />
               </label>
               <label className="block mt-2">
-                📸 Upload Crop Photo:
-                <input type="file" onChange={handleFileChange} className="border p-2 w-full rounded" />
+                ✏️ Crop:
+                <input
+                  type="text"
+                  value={cropName}
+                  onChange={(e) => setCropName(e.target.value)}
+                  className="border p-2 w-full rounded"
+                  placeholder="What are you selling?"
+                  required
+                />
               </label>
               <label className="block mt-2">
                 📅 Harvest Date:
@@ -134,7 +157,7 @@ const FarmerCrops = () => {
 
       {/* Crops List */}
       <div className="w-full p-5 border rounded-md border-gray-300 bg-gray-100">
-        {user?.crops?.length > 0 ? (
+        {crops?.length > 0 ? (
           <table className="w-full border-collapse">
             <thead>
               <tr className="border-b border-gray-300">
@@ -145,11 +168,11 @@ const FarmerCrops = () => {
               </tr>
             </thead>
             <tbody>
-              {user.crops.map((crop, index) => (
+              {crops.map((crop, index) => (
                 <tr key={index} className="border-b border-gray-200">
-                  <td className="p-2">{crop.amount}</td>
+                  <td className="p-2">{crop.quantity}</td>
                   <td className="p-2">{crop.quality}</td>
-                  <td className="p-2">{crop.harvest_date}</td>
+                  <td className="p-2">{crop.date}</td>
                   <td className="p-2 flex gap-2 justify-end">
                     <button className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600">Edit</button>
                     <button className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">Delete</button>

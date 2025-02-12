@@ -1,11 +1,13 @@
 # Define Harvest endpoints with Bluetooth functionality using Bleak
+from typing import List
+from models.harvest import Crop
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from schemas.harvest import HarvestCreate, HarvestRead, HarvestUpdate
+from schemas.harvest import HarvestCreate, HarvestBase, HarvestUpdate
 from crud.harvest import create_harvest, get_harvest, update_harvest, delete_harvest
 from services.bluetooth import discover_bluetooth_devices, connect_to_bluetooth_device, read_weight_from_device
 from database.session import SessionLocal
-import asyncio
+from datetime import date
 
 router = APIRouter()
 
@@ -16,30 +18,12 @@ def get_db():
     finally:
         db.close()
 
-@router.get("/bluetooth/devices/")
-async def list_bluetooth_devices():
-    """Discover nearby Bluetooth devices."""
-    devices = await discover_bluetooth_devices()
-    return {"devices": devices}
 
-@router.post("/bluetooth/", response_model=HarvestRead)
-async def add_harvest_from_bluetooth(farmer_id: int, location: str, device_address: str, db: Session = Depends(get_db)):
-    """Add harvest data using a Bluetooth-connected scale."""
-    client = await connect_to_bluetooth_device(device_address)
-    if not client:
-        raise HTTPException(status_code=400, detail="Failed to connect to Bluetooth device")
+@router.post("/crops/new", response_model=HarvestBase)
+async def add_harvest(harvest: HarvestBase, db: Session = Depends(get_db),):
+    return create_harvest(db, harvest)
 
-    weight = await read_weight_from_device(client)
-    if weight is None:
-        await client.disconnect()
-        raise HTTPException(status_code=400, detail="Failed to read weight from device")
-
-    await client.disconnect()
-
-    harvest_data = HarvestCreate(farmer_id=farmer_id, weight=weight, location=location)
-    return create_harvest(db, harvest_data)
-
-@router.get("/{harvest_id}", response_model=HarvestRead)
+@router.get("/crops/{harvest_id}", response_model=HarvestBase)
 def read_harvest(harvest_id: int, db: Session = Depends(get_db)):
     """Retrieve a specific harvest record."""
     harvest = get_harvest(db, harvest_id)
@@ -47,7 +31,15 @@ def read_harvest(harvest_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Harvest not found")
     return harvest
 
-@router.put("/{harvest_id}", response_model=HarvestRead)
+@router.get("/crops/", response_model=List[HarvestBase])
+def read_all_harvests(farmer_id: str, db: Session = Depends(get_db)):
+    """Retrieve all harvest records for a specific farmer."""
+    harvests = db.query(Crop).filter(Crop.farmer_id == farmer_id).all()
+    if not harvests:
+        raise HTTPException(status_code=404, detail="No harvests found for this farmer")
+    return harvests
+
+@router.put("/{harvest_id}", response_model=HarvestBase)
 def update_harvest_record(harvest_id: int, harvest_update: HarvestUpdate, db: Session = Depends(get_db)):
     """Update a specific harvest record."""
     updated_harvest = update_harvest(db, harvest_id, harvest_update)
