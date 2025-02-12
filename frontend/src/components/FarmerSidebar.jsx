@@ -34,7 +34,7 @@ const FarmerSidebar = () => {
                 <GiWheat className="text-[18px]"/> <span>My Crops</span>
             </Button>
 
-            <Button className="w-full !capitalize !justify-start flex gap-3 text-[14px] text-[rgba(0,0,0,0.8)] font-[500] items-center" href="/farmer-dashboard/sales"> 
+            <Button className="w-full !capitalize !justify-start flex gap-3 text-[14px] text-[rgba(0,0,0,0.8)] font-[500] items-center" href={`/farmer-dashboard/transactions/${user.id}`}> 
                 <FaMoneyCheck className="text-[18px]"/> <span>Sales</span>
             </Button>
                 

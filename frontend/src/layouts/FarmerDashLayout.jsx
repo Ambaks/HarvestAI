@@ -5,7 +5,7 @@ import FarmerDash from "../pages/FarmerDash";
 import FarmerSidebar from "../components/FarmerSidebar";
 import FarmerCrops from "../pages/FarmerCrops";
 import FarmerSettings from "../pages/FarmerSettings";
-import { DataProvider } from "../context/DataContext";
+import FarmerTransactions from "../pages/FarmerTransactions";
 
 const FarmerDashLayout = ({ isSidebarOpen, setIsSidebarOpen }) => {
   return (
@@ -25,7 +25,8 @@ const FarmerDashLayout = ({ isSidebarOpen, setIsSidebarOpen }) => {
         <Routes>
             <Route path="/" element={<FarmerDash />} />
             <Route path="/mycrops/:user_id" element={<FarmerCrops />} />
-              <Route path="/settings/:user_id" element={<FarmerSettings />} />
+            <Route path="/settings/:user_id" element={<FarmerSettings />} />
+            <Route path="/transactions/:user_id" element={<FarmerTransactions />} />
         </Routes>
         </div>
       </div>

@@ -88,7 +88,7 @@ const FarmerCrops = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`${API_BASE_URL}/harvests/crops/${selectedCrop.id}/`);
+      await axios.delete(`${API_BASE_URL}/harvests/crops/${selectedCrop.id}`);
       setCrops(crops.filter(crop => crop.id !== selectedCrop.id));
       setDeleteModal(false);
     } catch (error) {
