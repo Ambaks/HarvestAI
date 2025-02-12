@@ -164,7 +164,7 @@ const FarmerCrops = () => {
                 <th className="text-left p-2">Amount</th>
                 <th className="text-left p-2">Quality</th>
                 <th className="text-left p-2">Harvest Date</th>
-                <th className="text-left p-2">Actions</th>
+                <th className="text-left p-2">Crop</th>
               </tr>
             </thead>
             <tbody>
@@ -173,6 +173,7 @@ const FarmerCrops = () => {
                   <td className="p-2">{crop.quantity}</td>
                   <td className="p-2">{crop.quality}</td>
                   <td className="p-2">{crop.date}</td>
+                  <td className="p-2">{crop.crop_name}</td>
                   <td className="p-2 flex gap-2 justify-end">
                     <button className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600">Edit</button>
                     <button className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">Delete</button>
