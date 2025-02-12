@@ -39,7 +39,7 @@ def read_all_harvests(farmer_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="No harvests found for this farmer")
     return harvests
 
-@router.put("/{harvest_id}", response_model=HarvestBase)
+@router.put("/crops/{harvest_id}", response_model=HarvestBase)
 def update_harvest_record(harvest_id: int, harvest_update: HarvestUpdate, db: Session = Depends(get_db)):
     """Update a specific harvest record."""
     updated_harvest = update_harvest(db, harvest_id, harvest_update)
@@ -47,7 +47,7 @@ def update_harvest_record(harvest_id: int, harvest_update: HarvestUpdate, db: Se
         raise HTTPException(status_code=404, detail="Harvest not found")
     return updated_harvest
 
-@router.delete("/{harvest_id}", response_model=dict)
+@router.delete("/crops/{harvest_id}", response_model=dict)
 def delete_harvest_record(harvest_id: int, db: Session = Depends(get_db)):
     """Delete a specific harvest record."""
     success = delete_harvest(db, harvest_id)

@@ -84,6 +84,9 @@ const FarmerSettings = () => {
                 ))}
             </div>
 
+            <h1 className="text-xl font-black mb-4 mt-6">M-Pesa</h1>
+            <div className="w-full p-5 border rounded-md border-gray-300 bg-gray-100"></div>
+
             {/* Modal */}
             {editingField && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

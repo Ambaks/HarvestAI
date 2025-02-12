@@ -17,9 +17,9 @@ const FarmerDash = () => {
       <div className="w-[60%] p-5 border rounded-md border-[rgba(0,0,0,0.1)] flex items-center gap-8 mb-5 justify-between">
         <div className="info">
           <h1 className="text-[30px] font-bold leading-10">Good morning,<br/> {user.first_name}</h1> 
-          <p className="mt-3 font-[100] text-[13px] text-gray-500">Welcome back to your control center.</p>
+          <p className="mt-3 font-[100] text-[13px] text-gray-500">Start earning from your crops now!</p>
           <div className="py-5">
-            <Button className="rounded-lg bg-black shadow-sm shadow-black text-blue-600" href={`/farmer-dashboard/mycrops/${user.id}`}>
+            <Button className="rounded-lg bg-black shadow-sm shadow-black text-purple-600" href={`/farmer-dashboard/mycrops/${user.id}`}>
                 Add Crops
             </Button>
           </div>

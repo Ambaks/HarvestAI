@@ -7,6 +7,7 @@ import AdminDashboardLayout from "./layouts/AdminDashboardLayout";
 import FarmerDashLayout from "./layouts/FarmerDashLayout";
 import { UserContext, UserProvider } from "./context/UserContext";
 import FarmerCrops from "./pages/FarmerCrops";
+import { DataProvider } from "./context/DataContext";
 
 const App = () => {
 
@@ -15,6 +16,7 @@ const App = () => {
 
   return (
   <UserProvider>
+    <DataProvider>
     <Routes>
 
       <Route path="/" element={<Homepage />} />
@@ -73,6 +75,7 @@ const App = () => {
         
 
     </Routes>
+    </DataProvider>
    </UserProvider>
   );
 };
