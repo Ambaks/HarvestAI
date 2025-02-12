@@ -38,7 +38,10 @@ export const register = async (firstName, lastName, email, password, role) => {
 export const logout = async () => {
   try {
     const response = await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
+    window.location.href = "/";
     return response.data; // Ensure the function returns a result
+
+
   } catch (error) {
     throw new Error(error.response?.data?.message || "Logout failed. Please try again.");
   }

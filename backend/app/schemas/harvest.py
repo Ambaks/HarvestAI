@@ -3,6 +3,12 @@ from pydantic import BaseModel
 from typing import Optional
 
 class HarvestBase(BaseModel):
+    id: int
+    farmer_id: int
+    crop_name: str
+    quantity: float
+    quality: str
+    buyer_id: int
     date: str
     quantity: int
 

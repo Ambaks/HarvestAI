@@ -8,9 +8,9 @@ import FarmerSettings from "../pages/FarmerSettings";
 
 const FarmerDashLayout = ({ isSidebarOpen, setIsSidebarOpen }) => {
   return (
-    <section className="main h-screen flex flex-col">
+    <section className="main h-screen flex flex-col ">
       <DashHeader isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}/>
-      <div className="contentMain flex">
+      <div className="contentMain flex min-h-screen bg-white">
         {/* Sidebar that remains visible */}
         <div className={`text-black fixed md:relative h-full transition-all duration-300 ease-in-out ${isSidebarOpen ? "md:w-[10px] sm:w-full sm:left-0" : "w-0 md:w-0 sm:-left-full"} md:static sm:fixed sm:h-screen sm:z-50`}
         >

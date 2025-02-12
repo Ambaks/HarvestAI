@@ -66,8 +66,8 @@ const FarmerSettings = () => {
                     { label: "Last Name", key: "last_name" },
                     { label: "Date of Birth", key: "dob" },
                     { label: "E-mail", key: "email" },
-                    { label: "Phone Number", key: "phone" },
-                    { label: "Password", key: "password" }
+                    { label: "Phone Number", key: "phone" }
+                    
                 ].map(({ label, key }) => (
                     <div key={key} className="flex justify-between items-center p-3 border-b">
                         <div>

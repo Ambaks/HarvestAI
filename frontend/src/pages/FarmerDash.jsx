@@ -7,13 +7,12 @@ import {useFetchUser} from "../api/authService";
 const FarmerDash = () => {
   const { user } = useFetchUser();
 
-
   if (!user) {
     return <div>Loading user data or not logged in...</div>;
   }
 
   return (
-  <div>
+  <div >
     <div className="flex gap-2">
       <div className="w-[60%] p-5 border rounded-md border-[rgba(0,0,0,0.1)] flex items-center gap-8 mb-5 justify-between">
         <div className="info">
@@ -44,7 +43,7 @@ const FarmerDash = () => {
       </div>
 
       <div className="w-[40%] p-5 border rounded-md border-[rgba(0,0,0,0.1)] items-center gap-8 mb-5 justify-between">
-        <h3 className="font-bold">Revenue</h3>
+        <h3 className="font-bold">Earnings</h3>
           <LineChart
             xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
             series={[
@@ -58,17 +57,41 @@ const FarmerDash = () => {
           />
         </div>
       </div>
+      
       <h1 className="font-bold pb-3">Exporters around you:</h1>
       <FarmerDashboardBoxes/>
-      <h1>User Profile</h1>
-      <p>User ID: {user.id}</p>
-      <p>Email: {user.email}</p>
-      <p>First Name: {user.first_name}</p>
-      <p>Last Name: {user.last_name}</p>
-      <p>Role: {user.role}</p>
+      <h1 className="font-bold pt-4">Latest:</h1>
+      {/* Last Harvest Information Box */}
+      <div className="border rounded-md border-gray-300 bg-gray-100 p-5 mt-5">
+        <h3 className="font-bold text-lg mb-3">🌾 Last Harvest</h3>
+        
+        <div className="py-2 border-b">
+          <p>📅 Date: 13/01/2025</p>
+          <p>📍 Location: Machakos, Kenya</p>
+          <p>🌱 Amount Harvested: 300.00 kg</p>
+          <p>🔍 Crop Quality: Grade A</p>
+        </div>
+        
+        <div className="pt-3">
+          <p>🚛 Exporter: Tony Kegode</p>
+        </div>
+      </div>
+
+      {/* Recent Transactions Box */}
+      <div className="border rounded-md border-gray-300 bg-gray-100 p-5 mt-5">
+        <h3 className="font-bold border-b pb-2">💰 Payment Summary</h3>
+        <div className="py-3 border-b">
+          <p>✅ Received: KSh 12,500 (Exporter NAME)</p>
+          <p>🕒 Pending: KSh 5,000 (Awaiting verification)</p>
+        </div>
+        
+        <div className="flex justify-between pt-3">
+          <Button className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600">📜 View Details</Button>
+          <Button className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600">💳 Withdraw Money</Button>
+        </div>
+      </div>
     </div>
   );
 };
 
 export default FarmerDash;
-
