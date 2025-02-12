@@ -8,7 +8,8 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const FarmerCrops = () => {
   const { user } = useFetchUser();
-  const {crops, loadingCrops} = useData();
+  const {crops, setCrops, fetchCrops} = useData();
+
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [Weight, setWeight] = useState("");
@@ -19,29 +20,9 @@ const FarmerCrops = () => {
   const [error, setError] = useState(null);
 
 
-
   const [editModal, setEditModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedCrop, setSelectedCrop] = useState(null);
-
-
-  /*useEffect(() => {
-    const fetchCrops = async () => {
-        try {
-            const response = await axios.get(`${API_BASE_URL}/harvests/crops/`, {
-                params: { farmer_id: user?.id }, // Ensure user.id is available
-            });
-            console.log("API Response Data:", response.data);
-            setCrops(response.data);
-        } catch (error) {
-            console.error("Error fetching crops:", error);
-        }
-    };
-
-    if (user?.id) {
-        fetchCrops();
-    }
-}, [user?.id]);*/
 
 
   const handleSubmit = async () => {
@@ -62,8 +43,7 @@ const FarmerCrops = () => {
 
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/harvests/crops/new", // Replace with your actual backend API
+      const response = await axios.post(`${API_BASE_URL}/harvests/crops/new`, // Replace with your actual backend API
         formData,
         {
           headers: { "Content-Type": "application/json" },
@@ -73,6 +53,7 @@ const FarmerCrops = () => {
 
       console.log("Harvest submitted successfully:", response.data);
       setIsModalOpen(false);
+      fetchCrops();
       setWeight("");
     } catch (err) {
       console.error("Error submitting harvest:", err);
@@ -86,12 +67,15 @@ const FarmerCrops = () => {
   const handleEdit = async () => {
     try {
       const updatedData = {
-        quantity: selectedCrop.quantity,
+        crop_name: selectedCrop.crop_name,
+        quantity: parseFloat(selectedCrop.quantity), // Convert to float
         quality: selectedCrop.quality,
         date: selectedCrop.date,
+        
       };
   
       // The id is only used in the URL, not in the request body
+      console.log("Payload being sent:", updatedData);
       await axios.put(`${API_BASE_URL}/harvests/crops/${selectedCrop.id}`, updatedData);
   
       setCrops(crops.map(crop => (crop.id === selectedCrop.id ? { ...crop, ...updatedData } : crop)));
@@ -117,8 +101,6 @@ const FarmerCrops = () => {
     <div>
       <h1 className="text-black text-xl mb-4 mt-6">Your Crops:</h1>
       <div className="flex gap-4 mb-4">
-        <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Edit All</button>
-        <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Delete All</button>
         <button
           onClick={() => setIsModalOpen(true)}
           className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
@@ -180,12 +162,12 @@ const FarmerCrops = () => {
               </label>
               {error && <p className="text-red-500 text-sm">{error}</p>}
               <div className="flex justify-end mt-4">
-                <button onClick={() => setIsModalOpen(false)} className="bg-gray-500 text-white px-4 py-2 rounded mr-2">
+                <button onClick={() => setIsModalOpen(false)} className="bg-gray-500 text-white px-4 py-2 rounded shadow mr-2">
                   Cancel
                 </button>
                 <button
                   onClick={handleSubmit}
-                  className={`bg-green-500 text-white px-4 py-2 rounded ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+                  className={`bg-green-500 text-white px-4 py-2 rounded shadow ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? "Submitting..." : "✅ Submit Harvest"}
@@ -231,6 +213,9 @@ const FarmerCrops = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-[400px]">
             <h2 className="text-lg font-bold mb-4">Edit Crop</h2>
+            <label className="block mt-2">Crop:
+              <input type="text" value={selectedCrop.crop_name} onChange={(e) => setSelectedCrop({ ...selectedCrop, crop_name: e.target.value })} className="border p-2 w-full rounded" />
+            </label>
             <label className="block mt-2">Amount (kg):
               <input type="number" value={selectedCrop.quantity} onChange={(e) => setSelectedCrop({ ...selectedCrop, quantity: e.target.value })} className="border p-2 w-full rounded" />
             </label>

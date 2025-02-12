@@ -11,10 +11,6 @@ export const DataProvider = ({ children }) => {
     const [crops, setCrops] = useState([]); // Holds user information
     const [loadingCrops, setLoadingCrops] = useState(true); // Tracks session validation status
 
-    useEffect(() => {
-
-    if(!user) return;
-
     const fetchCrops = async () => {
         try {
             const res = await axios.get(`${API_BASE_URL}/harvests/crops`, {withCredentials: true, params: { farmer_id: user?.id }});
@@ -26,10 +22,13 @@ export const DataProvider = ({ children }) => {
         }
     };
 
+    useEffect(() => {
+    if(!user) return;
+    
     fetchCrops();
   },[user?.id]);
   return (
-    <DataContext.Provider value={{crops, setCrops, loadingCrops}}>
+    <DataContext.Provider value={{crops, setCrops, loadingCrops, fetchCrops}}>
         {children}
     </DataContext.Provider>
   );
