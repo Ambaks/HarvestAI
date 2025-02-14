@@ -17,13 +17,13 @@ const FarmerDashboardBoxes = () => {
     className='dashboardBoxesSlider'
     >
         <SwiperSlide>
-            <div className='box p-4 cursor-pointer hover:bg-[#f1f1f1] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4'>
-                <FaUser className='text-[30px] text-green-500'/>
+            <div className='p-4 cursor-pointer hover:bg-[#f1f1f1] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4'>
+                <FaUser className='text-[30px] text-indigo-500'/>
                 <div className='info w-[70%] pl-15'>
                     <h3>Total Users</h3>
                     <b>440</b>
                 </div>
-                <RxBarChart className='text-[50px] text-green-500'/>
+                <RxBarChart className='text-[50px] text-indigo-500' />
             </div>
         </SwiperSlide>
 

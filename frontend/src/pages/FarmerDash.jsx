@@ -4,6 +4,7 @@ import { LineChart } from '@mui/x-charts/LineChart';
 import { Button } from "@mui/material";
 import { useFetchUser } from "../api/authService";
 import { DataContext } from "../context/DataContext";
+import { Calendar, MapPin, Package, CheckCircle, Hourglass, FileText, CreditCard } from "lucide-react";
 
 const FarmerDash = () => {
   const { user } = useFetchUser();
@@ -43,29 +44,55 @@ const FarmerDash = () => {
       <h1 className="font-bold mt-6">Exporters around you:</h1>
       <FarmerDashboardBoxes />
 
-      <h1 className="font-bold mt-6">Latest:</h1>
+      <h1 className="text-2xl font-bold mt-6">Latest</h1>
+
       <div className="grid grid-cols-2 gap-6 mt-4">
-        <div className="bg-white shadow-lg rounded-2xl p-6">
-          <h3 className="font-bold text-lg mb-3">🌾 Last Harvest</h3>
-          <p>📅 Date: 13/01/2025</p>
-          <p>📍 Location: Machakos, Kenya</p>
-          <p>🌱 Amount Harvested: 300.00 kg</p>
-          <p>🔍 Crop Quality: Grade A</p>
-          <p className="mt-3">🚛 Exporter: Tony Kegode</p>
+        {/* Last Harvest Card */}
+        <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-200">
+          <h3 className="font-semibold text-xl mb-4 flex items-center gap-2 text-gray-700">
+            <Package className="text-[#635BFF]" size={20} /> Last Harvest
+          </h3>
+          <p className="text-gray-600 flex items-center gap-2">
+            <Calendar className="text-[#635BFF]" size={18} /> <span className="font-semibold">Date:</span> 13/01/2025
+          </p>
+          <p className="text-gray-600 flex items-center gap-2">
+            <MapPin className="text-[#635BFF]" size={18} /> <span className="font-semibold">Location:</span> Machakos, Kenya
+          </p>
+          <p className="text-gray-600 flex items-center gap-2">
+            <Package className="text-[#635BFF]" size={18} /> <span className="font-semibold">Amount Harvested:</span> 300.00 kg
+          </p>
+          <p className="text-gray-600 flex items-center gap-2">
+            <CheckCircle className="text-[#635BFF]" size={18} /> <span className="font-semibold">Crop Quality:</span> Grade A
+          </p>
+          <p className="mt-3 text-gray-700 font-medium flex items-center gap-2">
+            <FileText className="text-[#635BFF]" size={18} /> Exporter: Tony Kegode
+          </p>
         </div>
 
-        <div className="bg-white shadow-lg rounded-2xl p-6">
-          <h3 className="font-bold text-lg mb-3">💰 Payment Summary</h3>
-          <p>✅ Received: KSh 12,500 (Exporter NAME)</p>
-          <p>🕒 Pending: KSh 5,000 (Awaiting verification)</p>
-          <div className="flex justify-between mt-4">
-            <Button className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600">📜 View Details</Button>
-            <Button className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600">💳 Withdraw Money</Button>
+        {/* Payment Summary Card */}
+        <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-200">
+          <h3 className="font-semibold text-xl mb-4 flex items-center gap-2 text-gray-700">
+            <CreditCard className="text-[#635BFF]" size={20} /> Payment Summary
+          </h3>
+          <p className="text-gray-600 flex items-center gap-2">
+            <CheckCircle className="text-[#635BFF]" size={18} /> <span className="font-semibold">Received:</span> KSh 12,500 (Exporter NAME)
+          </p>
+          <p className="text-gray-600 flex items-center gap-2">
+            <Hourglass className="text-[#635BFF]" size={18} /> <span className="font-semibold">Pending:</span> KSh 5,000 (Awaiting verification)
+          </p>
+
+          <div className="flex justify-between mt-5">
+            <button className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg shadow-sm hover:bg-gray-200 flex items-center gap-2">
+              <FileText size={18} /> View Details
+            </button>
+            <button className="bg-[#635BFF] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#5f57f6] flex items-center gap-2">
+              <CreditCard size={18} /> Withdraw Money
+            </button>
           </div>
         </div>
       </div>
-    </div>
-  );
-};
+          </div>
+        );
+      };
 
 export default FarmerDash;

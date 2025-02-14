@@ -7,7 +7,6 @@ import { GiWheat } from "react-icons/gi";
 import { useFetchUser } from "../api/authService";
 import { brainwave } from "../assets";
 
-
 const FarmerSidebar = () => {
   const { user } = useFetchUser();
   const location = useLocation();
@@ -17,7 +16,7 @@ const FarmerSidebar = () => {
       {/* Logo */}
       <div className="mb-6 flex justify-center">
         <Link to="/">
-            <img src={brainwave} width={190} height={40} alt="QuikCrops" />
+          <img src={brainwave} width={190} height={40} alt="QuikCrops" />
         </Link>
       </div>
 
@@ -30,7 +29,7 @@ const FarmerSidebar = () => {
             to="/farmer-dashboard/" 
             icon={<RxDashboard className="text-[18px]" />}
             text="Dashboard" 
-            active={location.pathname === "/farmer-dashboard/"}
+            active={location.pathname === "/farmer-dashboard" || location.pathname === "/farmer-dashboard/"}
           />
 
           <SidebarButton 
