@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { useParams } from "react-router-dom";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const FarmerSettings = () => {
     const { user_id } = useParams();
@@ -54,62 +54,55 @@ const FarmerSettings = () => {
         }
     };
     
-    
-    
-
     return (
-        <div className="p-6">
-            <h1 className="text-xl font-black mb-4">Settings</h1>
-            <div className="w-full p-5 border rounded-md border-gray-300 bg-gray-100">
-                {[
+        <div className="p-6 font-inter">
+            <h1 className="text-2xl font-bold text-gray-800 mb-6">Settings</h1>
+            <div className="w-full p-6 border rounded-xl border-gray-300 bg-gray-50 shadow-sm">
+                {[ 
                     { label: "First Name", key: "first_name" },
                     { label: "Last Name", key: "last_name" },
                     { label: "Date of Birth", key: "dob" },
                     { label: "E-mail", key: "email" },
                     { label: "Phone Number", key: "phone" }
-                    
                 ].map(({ label, key }) => (
-                    <div key={key} className="flex justify-between items-center p-3 border-b">
+                    <div key={key} className="flex justify-between items-center p-4 border-b last:border-b-0">
                         <div>
-                            <h3 className="font-semibold">{label}:</h3>
-                            <p>{user[key] || "Not set"}</p>
+                            <h3 className="text-gray-700 font-medium">{label}:</h3>
+                            <p className="text-gray-500">{user[key] || "Not set"}</p>
                         </div>
                         <button
                             onClick={() => openModal(key)}
-                            className="ml-3 bg-blue-500 text-white px-4 py-2 rounded"
+                            className="ml-3 bg-[#6C4FF6] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#5a3cd3] transition-all"
                         >
                             Edit
                         </button>
                     </div>
                 ))}
             </div>
-
-            <h1 className="text-xl font-black mb-4 mt-6">M-Pesa</h1>
-            <div className="w-full p-5 border rounded-md border-gray-300 bg-gray-100"></div>
-
-            {/* Modal */}
+            <h1 className="text-2xl font-bold text-gray-800 mt-8 mb-4">M-Pesa</h1>
+            <div className="w-full p-6 border rounded-xl border-gray-300 bg-gray-50 shadow-sm"></div>
             {editingField && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                        <h2 className="text-lg font-bold mb-4">Edit {editingField.replace("_", " ")}</h2>
+                    <div className="bg-white p-6 rounded-xl shadow-lg w-96">
+                        <h2 className="text-lg font-bold mb-4 text-gray-800">Edit {editingField.replace("_", " ")}</h2>
                         <input
                             type="text"
                             value={tempValue}
                             onChange={(e) => setTempValue(e.target.value)}
-                            className="w-full p-2 border rounded mb-4"
+                            className="w-full p-3 border rounded-lg border-gray-300 focus:ring-2 focus:ring-[#6C4FF6] outline-none"
                         />
                         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-                        <div className="flex justify-end">
+                        <div className="flex justify-end mt-4">
                             <button
                                 onClick={() => setEditingField(null)}
-                                className="bg-gray-500 text-white px-4 py-2 rounded mr-2"
+                                className="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2 shadow-md hover:bg-gray-600 transition-all"
                                 disabled={loading}
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleSave}
-                                className="bg-green-500 text-white px-4 py-2 rounded"
+                                className="bg-[#6C4FF6] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#5a3cd3] transition-all"
                                 disabled={loading}
                             >
                                 {loading ? "Saving..." : "Save"}

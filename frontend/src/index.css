@@ -23,6 +23,18 @@
   }
 }
 
+.dashboardBoxesSlider {
+  overflow: visible !important; /* Allow shadows to extend */
+}
+
+.dashboardBoxesSlider .swiper-wrapper {
+  overflow: visible !important; /* Ensures children can overflow */
+}
+
+.dashboardBoxesSlider .swiper-slide {
+  overflow: visible; /* Ensures individual slides can show shadows */
+}
+
 .rotate-45 {
   @apply rotate-[45deg];
 }

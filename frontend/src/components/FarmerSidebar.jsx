@@ -1,54 +1,77 @@
 import { Button, Divider } from "@mui/material";
-import { brainwave } from "../assets";
-import { Link } from "react-router-dom";
-import { RxDashboard } from "react-icons/rx"
-import { RxGear } from "react-icons/rx";
+import { Link, useLocation } from "react-router-dom";
+import { RxDashboard, RxGear } from "react-icons/rx";
 import { TbBuildingCircus } from "react-icons/tb";
 import { FaMoneyCheck } from "react-icons/fa";
 import { GiWheat } from "react-icons/gi";
-import { useNavigate } from "react-router-dom";
-import {useFetchUser} from "../api/authService";
-
+import { useFetchUser } from "../api/authService";
+import { brainwave } from "../assets";
 
 
 const FarmerSidebar = () => {
-  const navigate = useNavigate();
   const { user } = useFetchUser();
+  const location = useLocation();
 
   return (
-    <div className='sidebar fixed top-0 left-0 bg-[#f1f1f1] w-[14%] h-full border-r border-[rgba(0,0,0,0.1)] py-2 px-2'>
-      <div className='py-2 w-full'>
+    <div className="sidebar fixed top-0 left-0 bg-white shadow-lg w-[200px] h-full border-r border-gray-200 py-4 px-4">
+      {/* Logo */}
+      <div className="mb-6 flex justify-center">
         <Link to="/">
             <img src={brainwave} width={190} height={40} alt="QuikCrops" />
         </Link>
       </div>
-      <ul className="mt-2">
-        <li> 
-            <Divider />
-            
-            <Button className="w-full !capitalize !justify-start flex gap-3 text-[14px] text-[rgba(0,0,0,0.8)] font-[500] items-center" href="/farmer-dashboard/"> 
-                <RxDashboard className="text-[18px]"/> <span>Dashboard</span>
-            </Button>
 
-            <Button className="w-full !capitalize !justify-start flex gap-3 text-[14px] text-[rgba(0,0,0,0.8)] font-[500] items-center" href={`/farmer-dashboard/mycrops/${user.id}`}> 
-                <GiWheat className="text-[18px]"/> <span>My Crops</span>
-            </Button>
+      {/* Sidebar Menu */}
+      <ul className="space-y-3">
+        <li className="space-y-6">
+          <Divider className="pb-10" />
 
-            <Button className="w-full !capitalize !justify-start flex gap-3 text-[14px] text-[rgba(0,0,0,0.8)] font-[500] items-center" href={`/farmer-dashboard/transactions/${user.id}`}> 
-                <FaMoneyCheck className="text-[18px]"/> <span>Sales</span>
-            </Button>
-                
-            <Button className="w-full !capitalize !justify-start flex gap-3 text-[14px] text-[rgba(0,0,0,0.8)] font-[500] items-center" href="/farmer-dashboard/marketplace"> 
-                <TbBuildingCircus className="text-[18px]"/> <span>Marketplace</span>
-            </Button>
+          <SidebarButton 
+            to="/farmer-dashboard/" 
+            icon={<RxDashboard className="text-[18px]" />}
+            text="Dashboard" 
+            active={location.pathname === "/farmer-dashboard/"}
+          />
 
-            <Button className="w-full !capitalize !justify-start flex gap-3 text-[14px] text-[rgba(0,0,0,0.8)] font-[500] items-center" href={`/farmer-dashboard/settings/${user.id}`}> 
-                <RxGear className="text-[18px]"/> <span>Settings</span>
-            </Button>
+          <SidebarButton 
+            to={`/farmer-dashboard/mycrops/${user.id}`} 
+            icon={<GiWheat className="text-[18px]" />}
+            text="My Crops" 
+            active={location.pathname.includes("/farmer-dashboard/mycrops")}
+          />
+
+          <SidebarButton 
+            to={`/farmer-dashboard/transactions/${user.id}`} 
+            icon={<FaMoneyCheck className="text-[18px]" />}
+            text="Sales" 
+            active={location.pathname.includes("/farmer-dashboard/transactions")}
+          />
+
+          <SidebarButton 
+            to="/farmer-dashboard/marketplace" 
+            icon={<TbBuildingCircus className="text-[18px]" />}
+            text="Marketplace" 
+            active={location.pathname.includes("/farmer-dashboard/marketplace")}
+          />
+
+          <SidebarButton 
+            to={`/farmer-dashboard/settings/${user.id}`} 
+            icon={<RxGear className="text-[18px]" />}
+            text="Settings" 
+            active={location.pathname.includes("/farmer-dashboard/settings")}
+          />
         </li>
       </ul>
     </div>
-  )
-}
+  );
+};
+
+const SidebarButton = ({ to, icon, text, active }) => (
+  <Link to={to} className={` w-full px-4 py-3 flex items-center gap-3 rounded-lg transition-all
+    ${active ? "bg-[#635BFF] text-white font-bold shadow-md" : "text-gray-500 hover:bg-gray-100"}`}>
+    {icon}
+    <span>{text}</span>
+  </Link>
+);
 
 export default FarmerSidebar;

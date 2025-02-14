@@ -18,7 +18,8 @@ const DashboardBoxes = () => {
     className='dashboardBoxesSlider'
     >
         <SwiperSlide>
-            <div className='box p-4 cursor-pointer hover:bg-[#f1f1f1] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4'>
+        <div>
+        <div className='p-4 cursor-pointer bg-[#fff] hover:bg-[#f1f1f1] shadow-lg rounded-2xl border border-[rgba(0,0,0,0.1)] flex items-center gap-4'>
                 <FaUser className='text-[30px] text-green-500'/>
                 <div className='info w-[70%] pl-15'>
                     <h3>Total Users</h3>
@@ -26,24 +27,29 @@ const DashboardBoxes = () => {
                 </div>
                 <RxBarChart className='text-[50px] text-green-500'/>
             </div>
+        </div>
         </SwiperSlide>
 
         <SwiperSlide>
-            <div className='box p-4 cursor-pointer hover:bg-[#f1f1f1] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4'>
-                <div className='info w-[70%]'>
+        <div>
+        <div className='overflow-visible p-4 cursor-pointer bg-white hover:bg-[#f1f1f1] shadow-lg rounded-2xl border border-[rgba(0,0,0,0.1)] flex items-center gap-4'>
+            <div className='info w-[70%]'>
                     <h3>Total Farmers</h3>
                     <b>436</b>
                 </div>
             </div>
+        </div>
         </SwiperSlide>
 
         <SwiperSlide>
-            <div className='box p-4 cursor-pointer hover:bg-[#f1f1f1] rounded-md border border-[rgba(0,0,0,0.1)] flex items-center gap-4'>
-                <div className='info w-[70%]'>
+        <div>
+        <div className='overflow-visible p-4 cursor-pointer bg-[#fff] hover:bg-[#f1f1f1] shadow-lg rounded-2xl border border-[rgba(0,0,0,0.1)] flex items-center gap-4'>
+            <div className='info w-[70%]'>
                     <h3>Total Exporters</h3>
                     <b>4</b>
                 </div>
             </div>
+        </div>
         </SwiperSlide>
    
     </Swiper>

@@ -35,8 +35,9 @@ const DashHeader = ({ isSidebarOpen, setIsSidebarOpen }) => {
   };
 
   return (
+    <div >
     <header
-      className={`w-full h-auto py-2 px-4 shadow-sm bg-white flex items-center justify-between transition-all duration-300
+      className={`fixed top-0 left-0 bg-[#fff] shadow-lg w-full border-b border-[rgba(0,0,0,0.1)] py-2 px-2 flex items-center justify-between transition-all duration-300
         ${isSidebarOpen ? "md:pl-64 sm:pl-4" : "pl-4"}`}
     >
       {/* Menu Button - Stays Fixed on Small Screens & Becomes "X" when Sidebar is Open */}
@@ -126,6 +127,7 @@ const DashHeader = ({ isSidebarOpen, setIsSidebarOpen }) => {
         </div>
       </div>
     </header>
+  </div>
   );
 };
 

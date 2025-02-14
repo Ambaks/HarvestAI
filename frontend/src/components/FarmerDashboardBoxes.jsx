@@ -2,7 +2,6 @@ import React from 'react';
 import {Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { Pagination } from '@mui/material';
 import {Navigation } from 'swiper/modules'
 import { FaUser } from "react-icons/fa";
 import { RxBarChart } from "react-icons/rx";
