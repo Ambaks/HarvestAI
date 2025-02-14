@@ -20,12 +20,12 @@ const DashboardBoxes = () => {
         <SwiperSlide>
         <div>
         <div className='p-4 cursor-pointer bg-[#fff] hover:bg-[#f1f1f1] shadow-lg rounded-2xl border border-[rgba(0,0,0,0.1)] flex items-center gap-4'>
-                <FaUser className='text-[30px] text-green-500'/>
+                <FaUser className='text-[30px] text-[#635BFF]'/>
                 <div className='info w-[70%] pl-15'>
                     <h3>Total Users</h3>
                     <b>440</b>
                 </div>
-                <RxBarChart className='text-[50px] text-green-500'/>
+                <RxBarChart className='text-[50px] text-[#635BFF]'/>
             </div>
         </div>
         </SwiperSlide>

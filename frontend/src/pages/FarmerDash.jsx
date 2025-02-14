@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
+import { Box } from "@mui/material";
 import FarmerDashboardBoxes from "../components/DashboardBoxes";
 import { LineChart } from '@mui/x-charts/LineChart';
-import { Button } from "@mui/material";
 import { useFetchUser } from "../api/authService";
 import { DataContext } from "../context/DataContext";
 import { Calendar, MapPin, Package, CheckCircle, Hourglass, FileText, CreditCard } from "lucide-react";
+
 
 const FarmerDash = () => {
   const { user } = useFetchUser();
@@ -22,24 +23,49 @@ const FarmerDash = () => {
     <div className="p-6 min-h-screen">
       <div className="grid grid-cols-3 gap-6">
         <div className="col-span-2 p-6 bg-white shadow-lg rounded-2xl flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Good morning,<br /> {user.first_name}</h1>
+          <div className="space-y-10">
+            <h1 className="text-3xl font-bold">Welcome back,<br /> {user.first_name}</h1>
             <p className="mt-2 text-gray-500">Start earning from your crops now!</p>
-            <Button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600" href={`/farmer-dashboard/mycrops/${user.id}`}>Add Crops</Button>
+            <a
+              href={`/farmer-dashboard/mycrops/${user.id}`}
+              className="mt-4 h-[60px] w-[240px] px-4 py-2 rounded-2xl border border-[rgba(0,0,0,0.1)] hover:bg-[#6058f6] shadow-lg bg-[#635BFF] text-white transition-all duration-300 hover:scale-105 flex items-center justify-center"
+            >
+              Add Crops
+            </a>         
           </div>
           <img className="w-40 rounded-lg shadow-sm" src="https://static.vecteezy.com/system/resources/previews/042/358/925/large_2x/barn-house-with-windmill-and-cow-farm-building-concept-illustration-isolated-on-white-background-vector.jpg" alt="Farm Illustration" />
         </div>
 
-        <div className="p-6 bg-white shadow-lg rounded-2xl flex flex-col">
-          <h3 className="font-bold mb-3">Earnings</h3>
-          <LineChart
-            xAxis={[{ data: chartData.x, scaleType: "point" }]}
-            series={[{ data: chartData.y, showMark: true, color: "#4CAF50", area: true }]}
-            width={400}
-            height={250}
-          />
+        <div className="w-full h-full flex flex-col min-w-0">
+        <div className=" bg-white shadow-lg rounded-2xl flex flex-col relative">
+          <h3 className="font-bold pl-6 pt-6">Earnings</h3>
+          {/* Check if there's real data */}
+          {chartData.y && chartData.y.some(value => value > 0) ? (
+            <LineChart
+              xAxis={[{ data: chartData.x, scaleType: "point" }]}
+              series={[{ data: chartData.y, showMark: true, color: "#635BFF", area: true }]}
+            />
+          ) : (
+            <div className="relative w-auto h-[250px] flex items-center justify-center">
+                {/* Dummy LineChart with placeholder data */}
+                <Box sx={{ width: "100%", height: "100%" }}>
+                  <LineChart
+                    xAxis={[{ data: ["Week 1", "Week 2", "Week 3", "Week 4", "Week5"], scaleType: "point" }]}
+                    series={[{ data: [50, 100, 130, 150, 220], showMark: true, color: "#635BFF", area: true }]}
+                    sx={{ width: "100%", height: "100%" }}
+                  />
+                </Box>
+                {/* Watermark overlay */}
+                  <div className="absolute mb-[20px] inset-0 flex items-center justify-center bg-white bg-opacity-85">
+                    <p className="text-[#000] text-sm font-semibold text-center">
+                      Sell your first crops to see your earnings appear here!
+                    </p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+        </div>
 
       <h1 className="font-bold mt-6">Exporters around you:</h1>
       <FarmerDashboardBoxes />
