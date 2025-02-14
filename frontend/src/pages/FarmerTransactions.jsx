@@ -1,25 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { 
   Box, Card, CardContent, CardHeader, Typography, Button, Stack, 
-  Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper 
+  Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress 
 } from "@mui/material";
 import { Check, Close } from "@mui/icons-material";
 import { useData } from "../context/DataContext";
 
-
 const FarmerTransactions = () => {
-    const orders = [
-        { id: 1, exporter: "Exporter A", quantity: "200kg", due: "Fri, 10AM" },
-        { id: 2, exporter: "Exporter B", quantity: "100kg", due: "Sat, 2PM" },
-        { id: 3, exporter: "Exporter C", quantity: "150kg", due: "Sun, 12PM" },
-      ];
+  const { transactions, loadingTransactions, fetchTransactions, orders, fetchOrders, updateOrderStatus } = useData();
 
-      
-    const { transactions, loadingTransactions, fetchTransactions } = useData();
-    // Fetch transactions on component mount
-    React.useEffect(() => {
-        fetchTransactions();
-    }, []);
+  // Fetch orders when component mounts
+  useEffect(() => {
+    fetchTransactions();
+    fetchOrders();
+  }, []);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -91,37 +85,40 @@ const FarmerTransactions = () => {
 
       {/* Incoming Orders Section (33% Width) */}
       <Box sx={{ width: "33%" }}>
-        <Card sx={{ boxShadow: 3, borderRadius: 3, height: "420px", display: "flex", flexDirection: "column"  }}>
-          <CardHeader
-            title="📦 Incoming Orders"
-            sx={{ textAlign: "center", bgcolor: "#f5f5f5", py: 2 }}
-          />
+        <Card sx={{ boxShadow: 3, borderRadius: 3, height: "420px", display: "flex", flexDirection: "column" }}>
+          <CardHeader title="📦 Incoming Orders" sx={{ textAlign: "center", bgcolor: "#f5f5f5", py: 2 }} />
           <CardContent sx={{ overflowY: "auto", flexGrow: 1 }}>
-            {orders.map((order) => (
-              <Box
-                key={order.id}
-                sx={{
-                  mb: 2,
-                  p: 2,
-                  border: "1px solid #ddd",
-                  borderRadius: 2,
-                  bgcolor: "#fafafa",
-                }}
-              >
-                <Typography variant="body1" sx={{ mb: 1 }}>
-                  🚚 {order.exporter}: Needs {order.quantity} (Due: {order.due})
-                </Typography>
-                <Stack direction="row" spacing={2}>
-                  <Button variant="contained" color="success" startIcon={<Check />}>
-                    Accept
-                  </Button>
-                  <Button variant="contained" color="error" startIcon={<Close />}>
-                    Decline
-                  </Button>
-                </Stack>
-              </Box>
-            ))}
-            <Button fullWidth variant="outlined">📜 View All Orders</Button>
+            {orders.length > 0 ? (
+              orders.filter(order => order.status === "Pending").map((order) => (
+                <Box key={order.id} sx={{ mb: 2, p: 2, border: "1px solid #ddd", borderRadius: 2, bgcolor: "#fafafa" }}>
+                  <Typography variant="body1" sx={{ mb: 1 }}>
+                    🚚 {order.exporter_id}: Needs {order.crop_name} {order.quantity}kg at {order.price_per_kg}kShs/kg(Due: {order.due_date})
+                  </Typography>
+                  <Stack direction="row" spacing={2}>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      startIcon={<Check />}
+                      onClick={() => updateOrderStatus(order.id, "Accepted")}
+                    >
+                      Accept
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      startIcon={<Close />}
+                      onClick={() => updateOrderStatus(order.id, "Declined")}
+                    >
+                      Decline
+                    </Button>
+                  </Stack>
+                </Box>
+              ))
+            ) : (
+              <Typography variant="body1" sx={{ textAlign: "center", mt: 2 }}>
+                No incoming orders.
+              </Typography>
+            )}
           </CardContent>
         </Card>
       </Box>

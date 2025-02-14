@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import FarmerDashboardBoxes from "../components/DashboardBoxes";
 import { LineChart } from '@mui/x-charts/LineChart';
 import { Button } from "@mui/material";
 import {useFetchUser} from "../api/authService";
+import { DataContext } from "../context/DataContext";
 
 const FarmerDash = () => {
   const { user } = useFetchUser();
-  
-  const earningsData = user.earnings || []; // Assuming it's an array
-  const timeLabels = earningsData.map((_, index) => `Day ${index + 1}`); // Generate simple labels
+  const {earningsData} = useContext(DataContext);
+  const chartData = {
+    x: earningsData.map(entry => new Date(entry.timestamp).toLocaleDateString()),
+    y: earningsData.map(entry => entry.cumulated_earnings),
+  };
 
   if (!user) {
     return <div>Loading user data or not logged in...</div>;
@@ -46,20 +49,22 @@ const FarmerDash = () => {
       </div>
 
       <div className="w-[40%] p-5 border rounded-md border-[rgba(0,0,0,0.1)] items-center gap-8 mb-5 justify-between">
-        <h3 className="font-bold">Earnings</h3>
-          <LineChart
-            xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
-            series={[
-              {
-                data: [2, 5.5, 2, 8.5, 1.5, 5],
-                showMark: false
-              },
-            ]}
-            width={500}
-            height={300}
-          />
-        </div>
-      </div>
+      <h3 className="font-bold">Earnings</h3>
+      <LineChart
+        xAxis={[{ data: chartData.x, scaleType: "point" }]}
+        series={[
+          {
+            data: chartData.y,
+            showMark: true,
+            color: "#4CAF50", // Green for earnings
+            area: true, // Optional: fills the area under the curve
+          },
+        ]}
+        width={500}
+        height={300}
+      />
+    </div>
+    </div>
       
       <h1 className="font-bold pb-3">Exporters around you:</h1>
       <FarmerDashboardBoxes/>

@@ -6,9 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from schemas.harvest import HarvestBase, HarvestUpdate, HarvestRead
 from crud.harvest import create_harvest, get_harvest, update_harvest, delete_harvest
-from services.bluetooth import discover_bluetooth_devices, connect_to_bluetooth_device, read_weight_from_device
 from database.session import SessionLocal
-from datetime import date
 
 router = APIRouter()
 

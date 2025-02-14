@@ -8,7 +8,7 @@ from services.auth import get_password_hash
 import uuid
 from typing import Dict, Any
 
-def read_user_by_id(db: Session, user_id: UUID4):
+def read_user_by_id(db: Session, user_id: str):
     return db.query(User).filter(User.user_id == user_id).first()
 
 def read_user(db: Session, email: EmailStr):
