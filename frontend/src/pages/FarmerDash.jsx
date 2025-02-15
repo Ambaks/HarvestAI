@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
 import { Box } from "@mui/material";
-import FarmerDashboardBoxes from "../components/DashboardBoxes";
 import { LineChart } from '@mui/x-charts/LineChart';
 import { useFetchUser } from "../api/authService";
 import { DataContext } from "../context/DataContext";
 import { Calendar, MapPin, Package, CheckCircle, Hourglass, FileText, CreditCard } from "lucide-react";
+import { lineElementClasses, markElementClasses } from '@mui/x-charts';
+import ScrollingDashboard from "../components/ScrollingDashboard";
 
 
 const FarmerDash = () => {
@@ -20,15 +21,15 @@ const FarmerDash = () => {
   }
 
   return (
-    <div className="p-6 min-h-screen">
-      <div className="grid grid-cols-3 gap-6">
+    <div className="px-1 pt-6 min-h-screen">
+      <div className="grid grid-cols-3 gap-6 pb-4">
         <div className="col-span-2 p-6 bg-white shadow-lg rounded-2xl flex items-center justify-between">
           <div className="space-y-10">
-            <h1 className="text-3xl font-bold">Welcome back,<br /> {user.first_name}</h1>
+            <h1 className="text-3xl leading-relaxed font-bold">Welcome back,<br /> {user.first_name}</h1>
             <p className="mt-2 text-gray-500">Start earning from your crops now!</p>
             <a
               href={`/farmer-dashboard/mycrops/${user.id}`}
-              className="mt-4 h-[60px] w-[240px] px-4 py-2 rounded-2xl border border-[rgba(0,0,0,0.1)] hover:bg-[#6058f6] shadow-lg bg-[#635BFF] text-white transition-all duration-300 hover:scale-105 flex items-center justify-center"
+              className="mt-4 h-[85px] opacity-[80%] w-[240px] px-4 py-2 rounded-2xl border border-[rgba(0,0,0,0.1)] hover:bg-[#6058f6] shadow-lg bg-primary text-white transition-all duration-300 hover:scale-105 flex items-center justify-center"
             >
               Add Crops
             </a>         
@@ -36,15 +37,70 @@ const FarmerDash = () => {
           <img className="w-40 rounded-lg shadow-sm" src="https://static.vecteezy.com/system/resources/previews/042/358/925/large_2x/barn-house-with-windmill-and-cow-farm-building-concept-illustration-isolated-on-white-background-vector.jpg" alt="Farm Illustration" />
         </div>
 
-        <div className="w-full h-full flex flex-col min-w-0">
-        <div className=" bg-white shadow-lg rounded-2xl flex flex-col relative">
+      <div className="w-full h-full flex flex-col min-w-0 ">
+        <div className="w-auto h-[346px] opacity-[80%] bg-white shadow-lg rounded-2xl flex flex-col relative">
           <h3 className="font-bold pl-6 pt-6">Earnings</h3>
           {/* Check if there's real data */}
           {chartData.y && chartData.y.some(value => value > 0) ? (
+            <Box sx={{ width: "100%", height: "90%" }}>
             <LineChart
-              xAxis={[{ data: chartData.x, scaleType: "point" }]}
-              series={[{ data: chartData.y, showMark: true, color: "#635BFF", area: true }]}
+              xAxis={[
+                {
+                  data: chartData.x,
+                  scaleType: "point",
+                  tickLabelStyle: { fill: "#A9A9A9", fontSize: 12 },
+                  stroke: "#D3D3D3",
+                  lineStyle: { stroke: "#D3D3D3" },
+                },
+              ]}
+              yAxis={[
+                {
+                  tickLabelStyle: { fill: "#A9A9A9", fontSize: 12 }, // Keep value labels
+                  stroke: "transparent", // Hide vertical y-axis
+                  lineStyle: { stroke: "transparent" }, // Ensure no axis line
+                },
+              ]}
+              series={[
+                {
+                  data: chartData.y,
+                  showMark: true,
+                  color: "#635BFF",
+                  area: true,
+                  lineStyle: { stroke: "#635BFF", strokeWidth: 2 },
+                },
+              ]}
+              grid={{
+                horizontal: true, // Enable only horizontal grid lines
+                vertical: false, // Disable vertical grid lines
+                stroke: "#D3D3D3", // Light gray color
+                strokeDasharray: "4 4", // Dashed lines
+              }}
+              sx={{
+                width: "100%",
+                height: "90%",
+                [`& .${lineElementClasses.root}`]: {
+                  stroke: '#8884d8',
+                  strokeWidth: 2,
+                },
+                [`& .${markElementClasses.root}`]: {
+                  stroke: '#8884d8',
+                  scale: '0.6',
+                  fill: '#fff',
+                  strokeWidth: 2,
+                },
+                "& .MuiChartsAxis-root line": {
+                  stroke: "transparent", // Hide all axis lines (y-axis)
+                },
+                "& .MuiChartsAxis-root text": {
+                  fill: "#A9A9A9", // Light gray labels
+                },
+                "& .MuiChartsGrid-line": {
+                  stroke: "#D3D3D3", // Light gray horizontal lines
+                  strokeDasharray: "4 4", // Optional dashed style
+                },
+              }}
             />
+          </Box>
           ) : (
             <div className="relative w-auto h-[250px] flex items-center justify-center">
                 {/* Dummy LineChart with placeholder data */}
@@ -65,14 +121,9 @@ const FarmerDash = () => {
             )}
           </div>
         </div>
-        </div>
-
-      <h1 className="font-bold mt-6">Exporters around you:</h1>
-      <FarmerDashboardBoxes />
-
-      <h1 className="text-2xl font-bold mt-6">Latest</h1>
-
-      <div className="grid grid-cols-2 gap-6 mt-4">
+      </div>
+      <ScrollingDashboard/>
+      <div className="grid grid-cols-2 gap-6 mt-4 ">
         {/* Last Harvest Card */}
         <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-200">
           <h3 className="font-semibold text-xl mb-4 flex items-center gap-2 text-gray-700">

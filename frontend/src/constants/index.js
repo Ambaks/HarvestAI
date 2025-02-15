@@ -36,6 +36,11 @@ import {
     yourlogo,
   } from "../assets";
   
+  export const theme = {
+    primary: "#635BFF",
+    secondary: "#FFC107",
+  };
+
   export const navigation = [
     {
       id: "0",

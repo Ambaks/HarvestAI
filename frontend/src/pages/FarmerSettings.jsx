@@ -89,7 +89,7 @@ const FarmerSettings = () => {
                             type="text"
                             value={tempValue}
                             onChange={(e) => setTempValue(e.target.value)}
-                            className="w-full p-3 border rounded-lg border-gray-300 focus:ring-2 focus:ring-[#6C4FF6] outline-none"
+                            className="w-full p-3 border rounded-lg border-gray-300 focus:ring-2 focus:ring-primary outline-none"
                         />
                         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
                         <div className="flex justify-end mt-4">
@@ -102,7 +102,7 @@ const FarmerSettings = () => {
                             </button>
                             <button
                                 onClick={handleSave}
-                                className="bg-[#6C4FF6] text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#5a3cd3] transition-all"
+                                className="bg-primary text-white px-4 py-2 rounded-lg shadow-md hover:bg-[#5a3cd3] transition-all"
                                 disabled={loading}
                             >
                                 {loading ? "Saving..." : "Save"}
