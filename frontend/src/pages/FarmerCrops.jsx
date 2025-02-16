@@ -3,14 +3,14 @@ import axios from "axios";
 import { useFetchUser } from "../api/authService";
 import { X, Pencil, Calendar, Leaf, CheckCircle, PlusCircle, Check, Trash2 } from "lucide-react";
 import { useData } from "../context/DataContext";
-import { theme } from "../constants";
+import { motion } from "framer-motion";
 
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; 
 
 const FarmerCrops = () => {
   const { user } = useFetchUser();
-  const {crops, setCrops, fetchCrops} = useData();
+  const {crops, setCrops, fetchCrops, harvests, setHarvests, fetchHarvests} = useData();
 
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,9 +22,12 @@ const FarmerCrops = () => {
   const [error, setError] = useState(null);
 
 
-  const [editModal, setEditModal] = useState(false);
-  const [deleteModal, setDeleteModal] = useState(false);
+  const [editCropModal, setEditCropModal] = useState(false);
+  const [editHarvestModal, setEditHarvestModal] = useState(false);
+  const [deleteCropModal, setDeleteCropModal] = useState(false);
+  const [deleteHarvestModal, setDeleteHarvestModal] = useState(false);
   const [selectedCrop, setSelectedCrop] = useState(null);
+  const [selectedHarvest, setSelectedHarvest] = useState(null);
 
 
   const handleSubmit = async () => {
@@ -42,6 +45,8 @@ const FarmerCrops = () => {
     formData.append("date", harvestDate);
     formData.append("crop_name", cropName);
     formData.append("quality", cropQuality);
+
+
 
 
     try {
@@ -66,7 +71,7 @@ const FarmerCrops = () => {
   };
 
 
-  const handleEdit = async () => {
+  const handleCropEdit = async () => {
     try {
       const updatedData = {
         crop_name: selectedCrop.crop_name,
@@ -77,27 +82,93 @@ const FarmerCrops = () => {
       };
   
       // The id is only used in the URL, not in the request body
-      console.log("Payload being sent:", updatedData);
-      await axios.put(`${API_BASE_URL}/harvests/crops/${selectedCrop.id}`, updatedData);
+      await axios.put(`${API_BASE_URL}/harvests/crops/`, updatedData, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true, // Ensure HTTP-only cookies are sent
+        params: { crop_id: selectedCrop?.id }
+      });
   
       setCrops(crops.map(crop => (crop.id === selectedCrop.id ? { ...crop, ...updatedData } : crop)));
-      setEditModal(false);
+      setEditCropModal(false);
+    } catch (error) {
+      console.error("Error updating crop:", error);
+    }
+  };
+
+  const handleHarvestEdit = async () => {
+    try {
+      const updatedHarvestData = {
+        crop_name: selectedHarvest.crop_name,
+        quantity: parseFloat(selectedHarvest.quantity), // Convert to float
+        quality: selectedHarvest.quality,
+        date: selectedHarvest.date,
+        
+      };
+  
+      // The id is only used in the URL, not in the request body
+      await axios.put(`${API_BASE_URL}/harvests/`, updatedHarvestData, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true, // Ensure HTTP-only cookies are sent
+        params: { harvest_id: selectedHarvest?.id }
+      });
+  
+      setHarvests(harvests.map(harvest => (harvest.id === selectedHarvest.id ? { ...harvest, ...updatedHarvestData } : harvest)));
+      setEditHarvestModal(false);
     } catch (error) {
       console.error("Error updating crop:", error);
     }
   };
 
 
-  const handleDelete = async () => {
+  const handleCropDelete = async () => {
     try {
-      await axios.delete(`${API_BASE_URL}/harvests/crops/${selectedCrop.id}`);
+      await axios.delete(`${API_BASE_URL}/harvests/crops/`, {withCredentials: true, // Ensure HTTP-only cookies are sent
+        params: { crop_id: selectedCrop?.id }});
       setCrops(crops.filter(crop => crop.id !== selectedCrop.id));
-      setDeleteModal(false);
+      setDeleteCropModal(false);
     } catch (error) {
       console.error("Error deleting crop:", error);
     }
   };
 
+  const handleHarvestDelete = async () => {
+    try {
+      await axios.delete(`${API_BASE_URL}/harvests`, {withCredentials: true, // Ensure HTTP-only cookies are sent
+        params: { harvest_id: selectedHarvest?.id }});
+      setHarvests(harvests.filter(harvest => harvest.id !== selectedHarvest.id));
+      setDeleteHarvestModal(false);
+    } catch (error) {
+      console.error("Error deleting crop:", error);
+    }
+  };
+
+
+
+  const handleHarvestNow = async (crop) => {
+    try {
+      console.log("Crop:", crop)
+      // Define payload based on HarvestBase schema
+      const payload = {
+        crop_name: crop.crop_name || "Unknown",
+        farmer_id: user.id,
+        crop_id: crop.id,
+        quantity: crop.quantity || 0, // Replace with actual value
+        quality: crop.quality || "Pesticide", // Replace with actual value
+        harvest_date: new Date().toISOString(), // Current date
+        status: "pending", // Default status
+      };
+      axios.post(`${API_BASE_URL}/harvests/new`, payload, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+  
+      await fetchCrops();
+      await fetchHarvests();
+      setCrops(prevCrops => prevCrops.filter(c => c.id !== crop.id));
+    } catch (error) {
+      console.error("Error harvesting crop:", error);
+    }
+  };
 
   return (
     <div>
@@ -116,7 +187,7 @@ const FarmerCrops = () => {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity">
+        <div className="fixed z-[99] inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity">
           <div className="bg-white p-6 rounded-2xl shadow-lg w-[460px] h-auto">
             <div className="flex justify-center items-center mb-4">
               <h2 className="text-2xl font-semibold text-[#000]">Record New Harvest</h2>
@@ -214,47 +285,78 @@ const FarmerCrops = () => {
 
       <div className="w-full p-5 border rounded-2xl border-gray-200 bg-gray-50 shadow-md">
         {crops?.length > 0 ? (
-          <table className="w-full border-collapse">
+        <div className="w-full">
+          <table className="w-full table-fixed border-collapse">
             {/* Table Header */}
-            <thead>
-              <tr className="bg-primary text-white">
-                <th className="text-left p-3 rounded-tl-lg">Amount (kg)</th>
-                <th className="text-left p-3">Quality</th>
-                <th className="text-left p-3">Harvest Date</th>
-                <th className="text-left p-3">Crop</th>
-                <th className="text-right p-3 rounded-tr-lg">Actions</th>
+            <thead className="w-full">
+              <tr className="bg-primary text-white w-full">
+                <th className="text-left p-3 w-1/5">Crop</th>
+                <th className="text-left p-3 w-1/5">Amount (kg)</th>
+                <th className="text-left p-3 w-1/5">Organic Grade</th>
+                <th className="text-left p-3 w-1/5">Harvest Date</th>
+                <th className="text-left p-3 w-1/5">Status</th>
+                <th className="text-left p-3 w-1/5">Actions</th>
               </tr>
             </thead>
-
+        
             {/* Table Body */}
             <tbody>
-              {crops.map((crop, index) => (
-                <tr key={index} className="border-b border-gray-200 hover:bg-gray-100 transition">
-                  <td className="p-3">{crop.quantity}</td>
-                  <td className="p-3">{crop.quality}</td>
-                  <td className="p-3">{crop.date}</td>
-                  <td className="p-3">{crop.crop_name}</td>
-                  <td className="p-3 flex gap-3 justify-end">
-                    {/* Edit Button */}
-                    <button
-                      onClick={() => { setSelectedCrop(crop); setEditModal(true); }}
-                      className="bg-primary text-white px-3 py-2 rounded-md shadow-md flex items-center gap-2 hover:bg-[#5A4ABB] transition"
-                    >
-                      <Pencil size={16} /> Edit
-                    </button>
-
-                    {/* Delete Button */}
-                    <button
-                      onClick={() => { setSelectedCrop(crop); setDeleteModal(true); }}
-                      className="bg-red-500 text-white px-3 py-2 rounded-md shadow-md flex items-center gap-2 hover:bg-red-600 transition"
-                    >
-                      <Trash2 size={16} /> Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+            {crops.map((crop) => {
+                  const isHarvestToday = crop.date === new Date().toISOString().split("T")[0];
+                  return (
+                    <tr key={crop.id} className="border-b border-gray-200 hover:bg-gray-100 transition">
+                      <td className="p-3">{crop.crop_name}</td>
+                      <td className="p-3">{crop.quantity}</td>
+                      <td className="p-3">{crop.quality}</td>
+                      <td className="p-3">
+                        {isHarvestToday ? (
+                        <motion.button
+                          onClick={() => handleHarvestNow(crop)}
+                          className="bg-[#ffca4f] text-white px-3 py-2 w-[110px] text-sm rounded-2xl shadow-md hover:bg-[#d5a942] transition"
+                          animate={{ scale: [1, 1.1, 1] }}
+                          transition={{ repeat: Infinity, duration: 1.9, ease: "easeInOut" }}
+                        >
+                          Harvest
+                       </motion.button>
+                        ) : (
+                          crop.date
+                        )}
+                      </td>
+                      <td className="p-3">
+                        <span
+                          className={`px-3 py-1 rounded-md text-white ${
+                            crop.status === "Harvested" ? "bg-green-500" : crop.status === "Pending" ? "bg-yellow-500" : "bg-gray-400"
+                          }`}
+                        >
+                          {crop.status}
+                        </span>
+                      </td>
+                      <td className="p-3 flex items-center space-x-2">
+                        <button
+                          onClick={() => {
+                            setSelectedCrop(crop);
+                            setEditCropModal(true);
+                          }}
+                          className="bg-primary text-white px-3 py-2 rounded-md shadow-md flex items-center gap-2 hover:bg-[#5A4ABB] transition"
+                        >
+                          <Pencil size={16} /> Edit
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSelectedCrop(crop);
+                            setDeleteCropModal(true);
+                          }}
+                          className="bg-red-500 text-white px-3 py-2 rounded-md shadow-md flex items-center gap-2 hover:bg-red-600 transition"
+                        >
+                          <Trash2 size={16} /> Delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+                </tbody>
           </table>
+        </div>
         ) : (
           <div className="text-gray-500 text-center py-6">
             <p>No crops recorded yet.</p>
@@ -262,8 +364,8 @@ const FarmerCrops = () => {
         )}
       </div>
       
-      {editModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      {editCropModal && (
+        <div className="fixed z-[99] inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-2xl space-y-9 shadow-lg w-[420px]">
             <h2 className="text-xl font-semibold text-primary flex justify-center text-center items-center gap-2 mb-4">
               <Pencil size={20} /> Edit Crop
@@ -313,13 +415,13 @@ const FarmerCrops = () => {
             {/* Buttons */}
             <div className="flex justify-center mt-5 gap-3">
               <button 
-                onClick={() => setEditModal(false)} 
+                onClick={() => setEditCropModal(false)} 
                 className="bg-gray-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-md hover:bg-gray-600 transition"
               >
                 <X size={16} /> Cancel
               </button>
               <button 
-                onClick={handleEdit} 
+                onClick={handleCropEdit} 
                 className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-md hover:bg-[#5A4ABB] transition"
               >
                 <Check size={16} /> Save
@@ -329,25 +431,92 @@ const FarmerCrops = () => {
         </div>
       )}
 
-      {deleteModal && (
+      {editHarvestModal && (
+              <div className="fixed z-[99] inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="bg-white p-6 rounded-2xl space-y-9 shadow-lg w-[420px]">
+                  <h2 className="text-xl font-semibold text-primary flex justify-center text-center items-center gap-2 mb-4">
+                    <Pencil size={20} /> Edit Crop
+                  </h2>
+
+                  {/* Input Fields */}
+                  <label className="block mb-3 text-gray-700">Crop:
+                    <input 
+                      type="text"
+                      value={selectedHarvest.crop_name}
+                      onChange={(e) => setSelectedHarvest({ ...selectedHarvest, crop_name: e.target.value })}
+                      className="border p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </label>
+
+                  <label className="block mb-3 text-gray-700">Amount (kg):
+                    <input 
+                      type="number"
+                      value={selectedHarvest.quantity}
+                      onChange={(e) => setSelectedHarvest({ ...selectedHarvest, quantity: e.target.value })}
+                      className="border p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </label>
+
+                  <label className="block mb-3 text-gray-700">Crop Quality:
+                    <select 
+                      value={selectedHarvest.quality}
+                      onChange={(e) => setSelectedHarvest({ ...selectedHarvest, quality: e.target.value })}
+                      className="border p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    >
+                      <option value="Grade A">Grade A</option>
+                      <option value="Tier B">Tier B</option>
+                      <option value="Tier C">Tier C</option>
+                    </select>
+                  </label>
+
+                  <label className=" mb-3 text-gray-700 flex items-center gap-2">
+                    <Calendar size={18} /> Harvest Date:
+                    <input 
+                      type="date"
+                      value={selectedHarvest.date}
+                      onChange={(e) => setSelectedHarvest({ ...selectedHarvest, date: e.target.value })}
+                      className="border p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </label>
+
+                  {/* Buttons */}
+                  <div className="flex justify-center mt-5 gap-3">
+                    <button 
+                      onClick={() => setEditHarvestModal(false)} 
+                      className="bg-gray-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-md hover:bg-gray-600 transition"
+                    >
+                      <X size={16} /> Cancel
+                    </button>
+                    <button 
+                      onClick={handleHarvestEdit} 
+                      className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-md hover:bg-[#5A4ABB] transition"
+                    >
+                      <Check size={16} /> Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+      {deleteCropModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-2xl shadow-lg w-[350px] text-center">
             <h2 className="text-xl font-semibold text-black flex items-center justify-center gap-2 mb-4">
-              <Trash2 size={20} /> Delete Crop?
+              <Trash2 size={20} /> Delete?
             </h2>
 
-            <p className="text-gray-700">Are you sure you want to delete this crop? This action cannot be undone.</p>
+            <p className="text-gray-700">Are you sure? This action cannot be undone.</p>
 
             {/* Buttons */}
             <div className="flex justify-center mt-5 gap-4">
               <button 
-                onClick={() => setDeleteModal(false)} 
+                onClick={() => setDeletCropeModal(false)} 
                 className="bg-gray-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-md hover:bg-gray-600 transition"
               >
                 <X size={16} /> Cancel
               </button>
               <button 
-                onClick={handleDelete} 
+                onClick={handleCropDelete} 
                 className="bg-red-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-md hover:bg-red-600 transition"
               >
                 <Trash2 size={16} /> Delete
@@ -356,9 +525,135 @@ const FarmerCrops = () => {
           </div>
         </div>
       )}
-      
+
+      {deleteHarvestModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-2xl shadow-lg w-[350px] text-center">
+            <h2 className="text-xl font-semibold text-black flex items-center justify-center gap-2 mb-4">
+              <Trash2 size={20} /> Delete?
+            </h2>
+
+            <p className="text-gray-700">Are you sure? This action cannot be undone.</p>
+
+            {/* Buttons */}
+            <div className="flex justify-center mt-5 gap-4">
+              <button 
+                onClick={() => setDeletCropeModal(false)} 
+                className="bg-gray-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-md hover:bg-gray-600 transition"
+              >
+                <X size={16} /> Cancel
+              </button>
+              <button 
+                onClick={handleHarvestDelete} 
+                className="bg-red-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-md hover:bg-red-600 transition"
+              >
+                <Trash2 size={16} /> Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+    <div className="bg-[#fff] shadow-lg rounded-2xl border border-[rgba(0,0,0,0.1)] p-6 mb-6 mt-6">
+    <div className="w-full p-5">
+    {harvests?.length > 0 ? (
+    <div className="w-full">
+        <h1 className="text-center text-4xl  text-black pb-6">Your Inventory</h1>
+      <table className="w-full table-fixed border-collapse">
+        {/* Table Header */}
+        <thead className="w-full">
+          <tr className="bg-primary text-white w-full">
+            <th className="text-left p-3 w-1/5">Crop</th>
+            <th className="text-left p-3 w-1/5">Amount (kg)</th>
+            <th className="text-left p-3 w-1/5">Organic Grade</th>
+            <th className="text-left p-3 w-1/5">Harvest Date</th>
+            <th className="text-left p-3 w-1/5">Status</th>
+            <th className="text-left p-3 w-1/5">Actions</th>
+          </tr>
+        </thead>
+
+        {/* Table Body */}
+        <tbody>
+          {harvests.map((harvest) => {
+            return (
+              <tr key={harvest.id} className="border-b border-gray-200 hover:bg-gray-100 transition">
+                <td className="p-3">{harvest.crop_name}</td>
+                <td className="p-3">{harvest.quantity}</td>
+                <td className="p-3">{harvest.quality}</td>
+                <td className="p-3">{harvest.harvest_date}</td>
+                <td className="p-3">
+                  <span
+                    className={`px-3 py-1 rounded-md text-white ${
+                      harvest.status === "Harvested" ? "bg-green-500" : harvest.status === "Pending" ? "bg-yellow-500" : "bg-gray-400"
+                    }`}
+                  >
+                    {harvest.status}
+                  </span>
+                </td>
+                <td className="p-3 flex items-center space-x-2">
+                  <button
+                    onClick={() => {
+                      setSelectedHarvest(harvest);
+                      setEditHarvestModal(true);
+                    }}
+                    className="bg-primary text-white px-3 py-2 rounded-md shadow-md flex items-center gap-2 hover:bg-[#5A4ABB] transition"
+                  >
+                    <Pencil size={16} /> Edit
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedHarvest(harvest);
+                      setDeleteHarvestModal(true);
+                    }}
+                    className="bg-red-500 text-white px-3 py-2 rounded-md shadow-md flex items-center gap-2 hover:bg-red-600 transition"
+                  >
+                    <Trash2 size={16} /> Delete
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
-    
+  )  : (
+          <div className="relative w-full">
+            {/* Overlay Text */}
+            <p className="text-gray-600 text-lg font-semibold absolute inset-0 flex items-center justify-center z-10">
+              No harvested crops to display yet.
+            </p>
+
+            {/* Blurry Dummy Table */}
+            <div className="opacity-40 blur-sm pointer-events-none">
+              <table className="w-full table-fixed border-collapse mt-2">
+                <thead>
+                  <tr className="bg-primary text-white">
+                    <th className="text-left p-3 w-1/5">Crop</th>
+                    <th className="text-left p-3 w-1/5">Amount (kg)</th>
+                    <th className="text-left p-3 w-1/5">Organic Grade</th>
+                    <th className="text-left p-3 w-1/5">Harvest Date</th>
+                    <th className="text-left p-3 w-1/5">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <tr key={i} className="border-b border-gray-300 bg-gray-100">
+                      <td className="p-3 bg-gray-200">&nbsp;</td>
+                      <td className="p-3 bg-gray-200">&nbsp;</td>
+                      <td className="p-3 bg-gray-200">&nbsp;</td>
+                      <td className="p-3 bg-gray-200">&nbsp;</td>
+                      <td className="p-3 bg-gray-200">&nbsp;</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
   );
 };
 

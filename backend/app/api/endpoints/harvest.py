@@ -1,11 +1,11 @@
 # Define Harvest endpoints with Bluetooth functionality using Bleak
 from typing import List
 from uuid import UUID
-from models.harvest import Crop
+from models.harvest import Crop, Harvest
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from schemas.harvest import HarvestBase, HarvestUpdate, HarvestRead
-from crud.harvest import create_harvest, get_harvest, update_harvest, delete_harvest
+from schemas.harvest import CropBase, HarvestUpdate, CropRead ,HarvestOut, HarvestBase
+from crud.harvest import create_crop, get_last_harvest, update_crop, delete_crop, create_harvest, delete_harvest, update_harvest
 from database.session import SessionLocal
 
 router = APIRouter()
@@ -18,38 +18,74 @@ def get_db():
         db.close()
 
 
-@router.post("/crops/new", response_model=HarvestBase)
-async def add_harvest(harvest: HarvestBase, db: Session = Depends(get_db),):
-    return create_harvest(db, harvest)
+@router.post("/crops/new", response_model=CropBase)
+async def add_crop(crop: CropBase, db: Session = Depends(get_db)):
+    return create_crop(db, crop)
 
-@router.get("/crops/{harvest_id}", response_model=HarvestRead)
-def read_harvest(harvest_id: UUID, db: Session = Depends(get_db)):
+
+@router.post("/new", response_model=HarvestOut)
+async def add_harvest(harvest: HarvestBase, db: Session = Depends(get_db)):
+    return create_harvest(db, harvest.crop_id, harvest)
+
+
+# Get unharvested crops
+@router.get("/crops", response_model=List[CropRead])
+def read_all_crops(farmer_id: str, db: Session = Depends(get_db)):
+    """Retrieve all unharvested crops for a specific farmer."""
+    harvests = db.query(Crop).filter(Crop.farmer_id == farmer_id, Crop.harvested == False).all()  
+    if not harvests:
+        raise HTTPException(status_code=404, detail="No unharvested crops found for this farmer")
+    return harvests
+
+# Get harvested crops
+@router.get("/", response_model=List[HarvestOut])
+def read_all_crops(farmer_id: str, db: Session = Depends(get_db)):
+    """Retrieve all unharvested crops for a specific farmer."""
+    harvests = db.query(Harvest).filter(Harvest.farmer_id == farmer_id).all()  
+    if not harvests:
+        raise HTTPException(status_code=404, detail="No unharvested crops found for this farmer")
+    return harvests
+
+@router.delete("/", response_model=dict)
+def delete_harvest_record(harvest_id: str, db: Session = Depends(get_db)):
+    """Delete a specific harvest record."""
+    success = delete_harvest(db, harvest_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Harvest not found")
+    return {"message": "Harvest deleted successfully"}
+
+
+@router.delete("/crops", response_model=dict)
+def delete_crop_record(harvest_id: str, db: Session = Depends(get_db)):
+    """Delete a specific harvest record."""
+    success = delete_crop(db, harvest_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Harvest not found")
+    return {"message": "Harvest deleted successfully"}
+
+# Get last harvest
+@router.get("/last", response_model=HarvestOut)
+def read_crop(farmer_id: str, db: Session = Depends(get_db)):
     """Retrieve a specific harvest record."""
-    harvest = get_harvest(db, harvest_id)
+    harvest = get_last_harvest(db, farmer_id)
     if not harvest:
         raise HTTPException(status_code=404, detail="Harvest not found")
     return harvest
 
-@router.get("/crops/", response_model=List[HarvestRead])
-def read_all_harvests(farmer_id: str, db: Session = Depends(get_db)):
-    """Retrieve all harvest records for a specific farmer."""
-    harvests = db.query(Crop).filter(Crop.farmer_id == farmer_id).all()
-    if not harvests:
-        raise HTTPException(status_code=404, detail="No harvests found for this farmer")
-    return harvests
+@router.put("/crops", response_model=CropRead)
+def update_crop_record(crop_id: str, harvest_update: HarvestUpdate, db: Session = Depends(get_db)):
+    """Update a specific harvest record."""
+    updated_harvest = update_crop(db, crop_id, harvest_update)
+    if not updated_harvest:
+        raise HTTPException(status_code=404, detail="Harvest not found")
+    return updated_harvest
 
-@router.put("/crops/{harvest_id}", response_model=HarvestRead)
-def update_harvest_record(harvest_id: UUID, harvest_update: HarvestUpdate, db: Session = Depends(get_db)):
+@router.put("/", response_model=HarvestUpdate)
+def update_harvest_record(harvest_id: str, harvest_update: HarvestUpdate, db: Session = Depends(get_db)):
     """Update a specific harvest record."""
     updated_harvest = update_harvest(db, harvest_id, harvest_update)
     if not updated_harvest:
         raise HTTPException(status_code=404, detail="Harvest not found")
     return updated_harvest
 
-@router.delete("/crops/{harvest_id}", response_model=dict)
-def delete_harvest_record(harvest_id: UUID, db: Session = Depends(get_db)):
-    """Delete a specific harvest record."""
-    success = delete_harvest(db, harvest_id)
-    if not success:
-        raise HTTPException(status_code=404, detail="Harvest not found")
-    return {"message": "Harvest deleted successfully"}
+

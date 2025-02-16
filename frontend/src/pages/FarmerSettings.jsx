@@ -62,6 +62,9 @@ const FarmerSettings = () => {
                     { label: "First Name", key: "first_name" },
                     { label: "Last Name", key: "last_name" },
                     { label: "Date of Birth", key: "dob" },
+                    { label: "Gender", key: "gender" },
+                    { label: "Farm Location", key: "location" },
+                    { label: "Farm size", key: "farm_size" },
                     { label: "E-mail", key: "email" },
                     { label: "Phone Number", key: "phone" }
                 ].map(({ label, key }) => (

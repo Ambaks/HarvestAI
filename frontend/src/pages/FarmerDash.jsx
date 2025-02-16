@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Box } from "@mui/material";
 import { LineChart } from '@mui/x-charts/LineChart';
 import { useFetchUser } from "../api/authService";
@@ -10,7 +10,7 @@ import ScrollingDashboard from "../components/ScrollingDashboard";
 
 const FarmerDash = () => {
   const { user } = useFetchUser();
-  const { earningsData } = useContext(DataContext);
+  const { earningsData, lastHarvest, fetchLastHarvest } = useContext(DataContext);
   const chartData = {
     x: earningsData.map(entry => new Date(entry.timestamp).toLocaleDateString()),
     y: earningsData.map(entry => entry.cumulated_earnings),
@@ -124,25 +124,35 @@ const FarmerDash = () => {
       </div>
       <ScrollingDashboard/>
       <div className="grid grid-cols-2 gap-6 mt-4 ">
+
         {/* Last Harvest Card */}
         <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-200">
           <h3 className="font-semibold text-xl mb-4 flex items-center gap-2 text-gray-700">
             <Package className="text-[#635BFF]" size={20} /> Last Harvest
           </h3>
           <p className="text-gray-600 flex items-center gap-2">
-            <Calendar className="text-[#635BFF]" size={18} /> <span className="font-semibold">Date:</span> 13/01/2025
+            <Calendar className="text-primary" size={18} /> 
+            <span className="font-semibold">Crop:</span> {lastHarvest?.crop_name || "N/A"}
           </p>
           <p className="text-gray-600 flex items-center gap-2">
-            <MapPin className="text-[#635BFF]" size={18} /> <span className="font-semibold">Location:</span> Machakos, Kenya
+            <Calendar className="text-primary" size={18} /> 
+            <span className="font-semibold">Date:</span> {lastHarvest?.harvest_date || "N/A"}
           </p>
           <p className="text-gray-600 flex items-center gap-2">
-            <Package className="text-[#635BFF]" size={18} /> <span className="font-semibold">Amount Harvested:</span> 300.00 kg
+            <MapPin className="text-primary" size={18} /> 
+            <span className="font-semibold">Location:</span> {lastHarvest?.location || "N/A"}
           </p>
           <p className="text-gray-600 flex items-center gap-2">
-            <CheckCircle className="text-[#635BFF]" size={18} /> <span className="font-semibold">Crop Quality:</span> Grade A
+            <Package className="text-primary" size={18} /> 
+            <span className="font-semibold">Amount Harvested:</span> {lastHarvest?.quantity ? `${lastHarvest.quantity} kg` : "N/A"}
+          </p>
+          <p className="text-gray-600 flex items-center gap-2">
+            <CheckCircle className="text-primary" size={18} /> 
+            <span className="font-semibold">Crop Quality:</span> {lastHarvest?.quality || "N/A"}
           </p>
           <p className="mt-3 text-gray-700 font-medium flex items-center gap-2">
-            <FileText className="text-[#635BFF]" size={18} /> Exporter: Tony Kegode
+            <FileText className="text-primary" size={18} /> 
+            Exporter: {lastHarvest?.exporter_name || "N/A"}
           </p>
         </div>
 

@@ -3,18 +3,32 @@ from uuid import UUID
 from pydantic import BaseModel
 from typing import Optional
 
-class HarvestBase(BaseModel):
+class CropBase(BaseModel):
     farmer_id: str
     crop_name: str
     quantity: float
     quality: str
     date: str
+    
 
-class HarvestCreate(HarvestBase):
+class HarvestBase(BaseModel):
+    crop_name: str
+    farmer_id: str
+    crop_id: str
+    quantity: float
+    quality: str
+    harvest_date: str
+    status: str
+
+class HarvestOut(HarvestBase):
+    id: str
+
+class HarvestCreate(CropBase):
     id: UUID
 
-class HarvestRead(HarvestBase):
+class CropRead(CropBase):
     id: UUID
+    status: str
 
     class Config:
         orm_mode = True
@@ -24,4 +38,5 @@ class HarvestUpdate(BaseModel):
     date: Optional[str] = None
     quality: str | None = None
     crop_name: str | None = None
+    status: str | None = None
 

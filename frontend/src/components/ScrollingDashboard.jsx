@@ -6,6 +6,7 @@ const ScrollerContainer = styled(Box)({
   display: "flex",
   overflow: "hidden",
   whiteSpace: "nowrap",
+  justifyContent: "center", // Centers the cards initially
   width: "100%",
   position: "relative",
   "&:hover div": {
@@ -13,16 +14,17 @@ const ScrollerContainer = styled(Box)({
   },
 });
 
-const Scroller = styled(Box)({
-  display: "flex",
-  gap: "50px", // Ensures a smooth, continuous flow
-  minWidth: "100%",
-  animation: "scroll 120s linear infinite", // 6x slower than the original (120s)
-  "@keyframes scroll": {
-    from: { transform: "translateX(100%)" },
-    to: { transform: "translateX(-100%)" },
-  },
-});
+const Scroller = styled(Box)(({ cardCount }) => ({
+    display: "flex",
+    gap: "50px",
+    minWidth: "100%",
+    transform: `translateX(-${(cardCount * 250) / 2}px)`, // Centers initially
+    animation: `scroll 120s linear infinite`,
+    "@keyframes scroll": {
+      from: { transform: `translateX(-${(cardCount * 250) / 2}px)` },
+      to: { transform: "translateX(-100%)" },
+    },
+  }));
 
 const DashboardCard = styled(Card)({
   minWidth: "200px", // Adjusted for consistent sizing
