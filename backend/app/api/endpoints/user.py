@@ -55,9 +55,7 @@ def update_existing_user(user_id: str, user_update: Dict[str, Any], db: Session 
     # Perform the update in the database
     updated_user = update_user(db, db_user, update_data)
 
-    refreshed_user = read_user_by_id(db, user_id)
-
-    return refreshed_user  # Return the updated user
+    return updated_user  # Return the updated user
 
 @router.delete("/users/{email}")
 def delete_existing_user(user: UserBase, db: Session = Depends(get_db)):

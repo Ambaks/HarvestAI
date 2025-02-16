@@ -6,6 +6,7 @@ import { DataContext } from "../context/DataContext";
 import { Calendar, MapPin, Package, CheckCircle, Hourglass, FileText, CreditCard } from "lucide-react";
 import { lineElementClasses, markElementClasses } from '@mui/x-charts';
 import ScrollingDashboard from "../components/ScrollingDashboard";
+import ProfileCompletion from "../components/ProfileCompletion";
 
 
 const FarmerDash = () => {
@@ -15,6 +16,11 @@ const FarmerDash = () => {
     x: earningsData.map(entry => new Date(entry.timestamp).toLocaleDateString()),
     y: earningsData.map(entry => entry.cumulated_earnings),
   };
+
+  useEffect(() => {
+      fetchLastHarvest(); // Refresh lastHarvest data when component renders
+  }, []);
+
 
   if (!user) {
     return <div>Loading user data or not logged in...</div>;
@@ -34,7 +40,8 @@ const FarmerDash = () => {
               Add Crops
             </a>         
           </div>
-          <img className="w-40 rounded-lg shadow-sm" src="https://static.vecteezy.com/system/resources/previews/042/358/925/large_2x/barn-house-with-windmill-and-cow-farm-building-concept-illustration-isolated-on-white-background-vector.jpg" alt="Farm Illustration" />
+
+          <ProfileCompletion/>
         </div>
 
       <div className="w-full h-full flex flex-col min-w-0 ">
@@ -113,7 +120,7 @@ const FarmerDash = () => {
                 </Box>
                 {/* Watermark overlay */}
                   <div className="absolute mb-[20px] inset-0 flex items-center justify-center bg-white bg-opacity-85">
-                    <p className="text-[#000] text-sm font-semibold text-center">
+                    <p className="text-[#000] text-xs font-semibold text-center">
                       Sell your first crops to see your earnings appear here!
                     </p>
                 </div>

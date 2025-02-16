@@ -1,12 +1,13 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { useParams } from "react-router-dom";
+import { useFetchUser } from "../api/authService";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const FarmerSettings = () => {
     const { user_id } = useParams();
-    const { user, setUser } = useContext(UserContext);
+    const { user, setUser } = useFetchUser();
     const [editingField, setEditingField] = useState(null);
     const [tempValue, setTempValue] = useState("");
     const [loading, setLoading] = useState(false);
@@ -19,6 +20,7 @@ const FarmerSettings = () => {
     };
     
     const handleSave = async () => {
+        console.log("User data:", user)
         if (tempValue.trim() === "") {
             setEditingField(null); // Close modal without changes
             return;
@@ -42,9 +44,12 @@ const FarmerSettings = () => {
                 console.error("Update error:", errorData);
                 throw new Error(errorData.detail || "Failed to update information.");
             }
-    
+            
             const updatedUser = await response.json();
-            setUser(updatedUser); // ✅ Update React context with new user data
+            setUser((prevUser) => ({
+                ...prevUser,   // ✅ Keep old data
+                [editingField]: tempValue, // ✅ Update only the modified field
+            }));
             setEditingField(null);
         } catch (err) {
             setError(err.message);

@@ -171,7 +171,7 @@ const FarmerCrops = () => {
   };
 
   return (
-    <div>
+    <div >
       
       <div className="bg-[#F8F7FC] shadow-md rounded-2xl p-6 mb-6">
         <h1 className="text-2xl font-semibold text-black mb-4">Your Crops</h1>
@@ -555,7 +555,7 @@ const FarmerCrops = () => {
       )}
 
 
-    <div className="bg-[#fff] shadow-lg rounded-2xl border border-[rgba(0,0,0,0.1)] p-6 mb-6 mt-6">
+    <div className="bg-[#fff] shadow-md rounded-2xl border border-gray-200 p-6 mb-6 mt-6">
     <div className="w-full p-5">
     {harvests?.length > 0 ? (
     <div className="w-full">

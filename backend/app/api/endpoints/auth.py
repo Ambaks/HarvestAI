@@ -78,8 +78,10 @@ def get_current_user(
         email=user_record.email,
         phone=user_record.phone,
         dob=user_record.dob,
-        role=user_record.role
-        
+        gender=user_record.gender,
+        location=user_record.location,
+        farm_size = user_record.farm_size,
+        role=user_record.role   
     )
 
 @router.post("/auth/logout")
