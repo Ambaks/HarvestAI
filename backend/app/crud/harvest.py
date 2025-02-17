@@ -33,7 +33,7 @@ def update_crop(db: Session, crop_id: str, crop: HarvestUpdate):
         db.commit()
         db.refresh(db_crop)
         return db_crop
-    return print("Crop not found.")
+    print("Crop not found.")
 
 # Modify harvest
 def update_harvest(db: Session, harvest_id: str, crop: HarvestUpdate):
@@ -48,7 +48,7 @@ def update_harvest(db: Session, harvest_id: str, crop: HarvestUpdate):
         db.commit()
         db.refresh(db_harvest)
         return db_harvest
-    return print("Crop not found.")
+    print("Crop not found.")
 
 def create_harvest(db: Session, crop_id: str, harvest: HarvestBase):
     # Update the current crop record

@@ -14,51 +14,50 @@ const FarmerSidebar = () => {
   return (
     <div className="sidebar fixed top-0 left-0 bg-white shadow-lg w-[200px] h-full border-r border-gray-200 py-4 px-4">
       {/* Logo */}
-      <div className="mb-6 flex justify-center">
+      <div className="mb-2 flex justify-center">
         <Link to="/">
           <img src={brainwave} width={190} height={40} alt="QuikCrops" />
         </Link>
       </div>
+      <Divider className="pb-1" />
 
       {/* Sidebar Menu */}
-      <ul className="space-y-3">
+      <ul className="space-y-3 mt-20">
         <li className="space-y-6">
-          <Divider className="pb-10" />
+            <SidebarButton 
+              to="/farmer-dashboard/" 
+              icon={<RxDashboard className="text-[18px]" />}
+              text="Dashboard" 
+              active={location.pathname === "/farmer-dashboard" || location.pathname === "/farmer-dashboard/"}
+            />
 
-          <SidebarButton 
-            to="/farmer-dashboard/" 
-            icon={<RxDashboard className="text-[18px]" />}
-            text="Dashboard" 
-            active={location.pathname === "/farmer-dashboard" || location.pathname === "/farmer-dashboard/"}
-          />
+            <SidebarButton 
+              to={`/farmer-dashboard/mycrops/${user.id}`} 
+              icon={<GiWheat className="text-[18px]" />}
+              text="My Crops" 
+              active={location.pathname.includes("/farmer-dashboard/mycrops")}
+            />
 
-          <SidebarButton 
-            to={`/farmer-dashboard/mycrops/${user.id}`} 
-            icon={<GiWheat className="text-[18px]" />}
-            text="My Crops" 
-            active={location.pathname.includes("/farmer-dashboard/mycrops")}
-          />
+            <SidebarButton 
+              to={`/farmer-dashboard/transactions/${user.id}`} 
+              icon={<FaMoneyCheck className="text-[18px]" />}
+              text="Sales" 
+              active={location.pathname.includes("/farmer-dashboard/transactions")}
+            />
 
-          <SidebarButton 
-            to={`/farmer-dashboard/transactions/${user.id}`} 
-            icon={<FaMoneyCheck className="text-[18px]" />}
-            text="Sales" 
-            active={location.pathname.includes("/farmer-dashboard/transactions")}
-          />
+            <SidebarButton 
+              to="/farmer-dashboard/marketplace" 
+              icon={<TbBuildingCircus className="text-[18px]" />}
+              text="Marketplace" 
+              active={location.pathname.includes("/farmer-dashboard/marketplace")}
+            />
 
-          <SidebarButton 
-            to="/farmer-dashboard/marketplace" 
-            icon={<TbBuildingCircus className="text-[18px]" />}
-            text="Marketplace" 
-            active={location.pathname.includes("/farmer-dashboard/marketplace")}
-          />
-
-          <SidebarButton 
-            to={`/farmer-dashboard/settings/${user.id}`} 
-            icon={<RxGear className="text-[18px]" />}
-            text="Settings" 
-            active={location.pathname.includes("/farmer-dashboard/settings")}
-          />
+            <SidebarButton 
+              to={`/farmer-dashboard/settings/${user.id}`} 
+              icon={<RxGear className="text-[18px]" />}
+              text="Settings" 
+              active={location.pathname.includes("/farmer-dashboard/settings")}
+            />
         </li>
       </ul>
     </div>

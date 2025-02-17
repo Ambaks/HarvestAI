@@ -1,12 +1,9 @@
 import React, {useContext} from "react";
-import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { RiMenu2Line, RiCloseLine } from "react-icons/ri";
-import { IconButton, Badge, Menu, MenuItem, Divider } from "@mui/material";
+import { IconButton, Badge, Menu, MenuItem } from "@mui/material";
 import { styled } from "@mui/material";
-import { FaRegBell, FaRegUser } from "react-icons/fa";
-import { IoMdLogOut } from "react-icons/io";
-import { PiGearFineBold } from "react-icons/pi";
+import { FaRegBell } from "react-icons/fa";
 import { UserContext } from "../context/UserContext";
 import { logout } from "../api/authService";
 
@@ -38,7 +35,7 @@ const DashHeader = ({ isSidebarOpen, setIsSidebarOpen }) => {
     <div className="z-[50]">
     <header
       className={`fixed top-0 left-0 bg-[#fff] shadow-lg w-full h-[70px] border-b border-[rgba(0,0,0,0.1)] py-2 px-2 flex items-center justify-between transition-all duration-300
-        ${isSidebarOpen ? "md:pl-64 sm:pl-4" : "pl-4"}`}
+        ${isSidebarOpen ? "md:pl-[200px] sm:pl-4" : "pl-4"}`}
     >
       {/* Menu Button - Stays Fixed on Small Screens & Becomes "X" when Sidebar is Open */}
       <Button
