@@ -9,7 +9,6 @@ export const DataContext = createContext();
 export const DataProvider = ({ children }) => {
     const {user} = useFetchUser();
     const [harvests, setHarvests] = useState([]);
-    const [lastHarvest, setLastHarvest] = useState()
     const [transactions, setTransactions] = useState([]); //Holds user transaction info
     const [loadingTransactions, setLoadingTransactions] = useState(true); 
     const [crops, setCrops] = useState([]); // Holds user information
@@ -29,14 +28,6 @@ export const DataProvider = ({ children }) => {
         }
     };
 
-    const fetchLastHarvest = async () => {
-      try {
-        const res = await axios.get(`${API_BASE_URL}/harvests/last`, {withCredentials: true, params: {farmer_id: user?.id}});
-        setLastHarvest(res.data)
-      } catch (error){
-        console.error("Error fetching crops:", error);
-      } 
-    }
 
     const fetchTransactions = async () => {
         try {
@@ -49,6 +40,7 @@ export const DataProvider = ({ children }) => {
         }
     };
 
+
     const fetchHarvests = async () => {
       try {
           const res = await axios.get(`${API_BASE_URL}/harvests`, {withCredentials: true, params: { farmer_id: user?.id }});
@@ -58,6 +50,7 @@ export const DataProvider = ({ children }) => {
           console.error("Error fetching crops:", error);
       } 
   };
+
 
     const fetchEarnings = async () => {
       try {
@@ -83,6 +76,7 @@ export const DataProvider = ({ children }) => {
         }
       };
     
+
     const updateOrderStatus = async (orderId, status) => {
         try {
           await axios.patch(
@@ -106,6 +100,16 @@ export const DataProvider = ({ children }) => {
       };
 
 
+      const resetData = () => {
+        setEarningsData(() => []);
+        setLastHarvest(() => null);
+        setHarvests(() => []);
+        setCrops(() => []);
+        setOrders(() => []);
+        setTransactions(() => []);
+      };
+
+
     useEffect(() => {
         if (!user) return;
         fetchCrops();
@@ -113,11 +117,10 @@ export const DataProvider = ({ children }) => {
         fetchEarnings();
         fetchOrders();
         fetchHarvests();
-        fetchLastHarvest();
     }, [user?.id]);
 
   return (
-    <DataContext.Provider value={{crops, setCrops, loadingCrops, fetchCrops, lastHarvest, setLastHarvest, fetchLastHarvest, fetchOrders, fetchTransactions, orders, setOrders, transactions, setTransactions, loadingTransactions, earningsData, setEarningsData, fetchEarnings, updateOrderStatus, fetchHarvests, harvests, setHarvests}}>
+    <DataContext.Provider value={{crops, setCrops, loadingCrops, fetchCrops, fetchOrders, fetchTransactions, orders, setOrders, transactions, setTransactions, loadingTransactions, earningsData, setEarningsData, fetchEarnings, updateOrderStatus, fetchHarvests, harvests, setHarvests, resetData}}>
         {children}  
     </DataContext.Provider>
   );

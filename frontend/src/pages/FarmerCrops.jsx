@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useFetchUser } from "../api/authService";
 import { X, Pencil, Calendar, Leaf, CheckCircle, PlusCircle, Check, Trash2 } from "lucide-react";
-import { useData } from "../context/DataContext";
+import { useData } from "../context/FarmerDataContext";
 import { motion } from "framer-motion";
 
 
@@ -61,6 +61,7 @@ const FarmerCrops = () => {
       console.log("Harvest submitted successfully:", response.data);
       setIsModalOpen(false);
       fetchCrops();
+      fetchHarvests();
       setWeight("");
     } catch (err) {
       console.error("Error submitting harvest:", err);
@@ -154,8 +155,8 @@ const FarmerCrops = () => {
         crop_id: crop.id,
         quantity: crop.quantity || 0, // Replace with actual value
         quality: crop.quality || "Pesticide", // Replace with actual value
-        harvest_date: new Date().toISOString(), // Current date
-        status: "pending", // Default status
+        harvest_date: new Date().toISOString().split("T")[0], // Current date
+        status: "Pending", // Default status
       };
       axios.post(`${API_BASE_URL}/harvests/new`, payload, {
         headers: { "Content-Type": "application/json" },
@@ -175,7 +176,7 @@ const FarmerCrops = () => {
       
       <div className="bg-[#F8F7FC] shadow-md rounded-2xl p-6 mb-6">
         <h1 className="text-2xl font-semibold text-black mb-4">Your Crops</h1>
-        <div className="flex justify-start">
+        <div className="flex justify-between">
           <button
             onClick={() => setIsModalOpen(true)}
             className="flex items-center gap-2 bg-primary text-white px-5 py-3 rounded-lg shadow-md hover:bg-[#5A4ABB] transition duration-300"

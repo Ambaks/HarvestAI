@@ -5,8 +5,9 @@ import Login from "./pages/Login";
 import PrivateRoute from "./utils/PrivateRoute";
 import AdminDashboardLayout from "./layouts/AdminDashboardLayout";
 import FarmerDashLayout from "./layouts/FarmerDashLayout";
+import ExporterDashLayout from "./layouts/ExporterDashLayout";
 import { UserContext, UserProvider } from "./context/UserContext";
-import { DataProvider } from "./context/DataContext";
+import { DataProvider } from "./context/FarmerDataContext";
 import { AnimatePresence } from "framer-motion";
 import PageWrapper from "./utils/PageWrapper";
 
@@ -74,7 +75,7 @@ const App = () => {
                 <PrivateRoute>
                   <PageWrapper>
                     <div className="bg-[#fff]">
-                      <AdminDashboardLayout isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+                      <ExporterDashLayout isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
                     </div>
                   </PageWrapper>
                 </PrivateRoute>

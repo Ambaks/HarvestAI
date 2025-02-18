@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useFetchUser } from "../api/authService";
@@ -9,7 +9,6 @@ const ProfileCompletion = () => {
   const { user } = useFetchUser();
   const [completion, setCompletion] = useState(0);
   const [animatedValue, setAnimatedValue] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -35,18 +34,11 @@ const ProfileCompletion = () => {
     setAnimatedValue(percentage);
   }, [user]); // Re-run when user data changes
 
-  useEffect(() => {
-    if (isHovered) {
-      setAnimatedValue(0);
-      setTimeout(() => setAnimatedValue(completion), 100);
-    }
-  }, [isHovered, completion]);
+
   return (
     <div className="lg:w-[420px] flex flex-col items-center justify-center bg-opacity-15 shadow-md shadow-gray-200 h-full p-6 rounded-2xl bg-[#2588f9] border-[rgba(0,0,0,0.1)]">
       <div
         className="w-32 h-32 transition-all duration-300"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
       >
         <CircularProgressbar
           value={animatedValue}
@@ -71,7 +63,7 @@ const ProfileCompletion = () => {
             Your profile is incomplete! Complete it now to maximize your profit.
           </p>
           <Link to={`/farmer-dashboard/settings/${user.id}`}>
-            <button className="mt-4 px-5 py-2 bg-[#635BFF] shadow-md shadow-gray-400 text-white rounded-full hover:bg-[#5147DB] transition">
+            <button className="mt-4 px-5 py-2 bg-primary hover:scale-105 shadow-md shadow-gray-400 text-white rounded-full hover:bg-[#5147DB] transition">
               Complete Now
             </button>
           </Link>

@@ -35,10 +35,12 @@ export const register = async (firstName, lastName, email, password, role) => {
 
 
 /*Logout function */
-export const logout = async () => {
+export const logout = async (setUser, resetData) => {
   try {
     const response = await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
     window.location.href = "/";
+    setUser(null); // Reset user state to prevent data leakage
+    resetData();
     return response.data; // Ensure the function returns a result
 
 

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Container, Box, Card, CardHeader, CardContent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, Stack, Button, CircularProgress } from "@mui/material";
 import { Check, Close, History, Inbox } from "@mui/icons-material";
-import { useData } from "../context/DataContext";
+import { useData } from "../context/FarmerDataContext";
 
 const FarmerTransactions = () => {
   const { transactions, loadingTransactions, fetchTransactions, orders, fetchOrders, updateOrderStatus } = useData();

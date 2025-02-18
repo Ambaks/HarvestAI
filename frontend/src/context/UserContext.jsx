@@ -36,16 +36,6 @@ export const UserProvider = ({ children }) => {
   },  [navigate]); // Only runs on initial render
 
 
-  const logout = async () => {
-    try {
-      // Call the backend to log out and clear the HttpOnly cookie
-      await axios.post("http://localhost:8000/auth/logout", {}, { withCredentials: true });
-      setUser(null); // Clear user context on logout
-    } catch (error) {
-      console.error("Logout failed:", error.response?.data);
-    }
-  };
-
   if (loading) {
     return (
       <div className="loading-spinner flex justify-center items-center min-h-screen w-full">
@@ -57,7 +47,7 @@ export const UserProvider = ({ children }) => {
   }
 
   return (
-    <UserContext.Provider value={{ user, setUser, isAuthenticated, logout }}>
+    <UserContext.Provider value={{ user, setUser, isAuthenticated }}>
       {children}
     </UserContext.Provider>
   );

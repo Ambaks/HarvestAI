@@ -22,6 +22,7 @@ class HarvestBase(BaseModel):
 
 class HarvestOut(HarvestBase):
     id: str
+    
 
 class HarvestCreate(CropBase):
     id: UUID

@@ -5,6 +5,7 @@ import { IconButton, Badge, Menu, MenuItem } from "@mui/material";
 import { styled } from "@mui/material";
 import { FaRegBell } from "react-icons/fa";
 import { UserContext } from "../context/UserContext";
+import { DataContext } from "../context/FarmerDataContext";
 import { logout } from "../api/authService";
 
 
@@ -22,6 +23,10 @@ const DashHeader = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const { user } = useContext(UserContext);
   const [anchorMyAcc, setAnchorMyAcc] = React.useState(null);
   const open = Boolean(anchorMyAcc);
+
+  const { setUser } = useContext(UserContext);
+  const { resetData } = useContext(DataContext);
+
 
   const handleClickMyAcc = (event) => {
     setAnchorMyAcc(event.currentTarget);
@@ -112,7 +117,7 @@ const DashHeader = ({ isSidebarOpen, setIsSidebarOpen }) => {
               </div>
             </MenuItem>
 
-            <MenuItem onClick={logout}
+            <MenuItem onClick={() => logout(setUser, resetData)}
                    className="!bg-white">
               <div className="flex items-center gap-3">
                 <div className="info cursor-pointer">

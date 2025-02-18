@@ -5,7 +5,7 @@ from models.harvest import Crop, Harvest
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from schemas.harvest import CropBase, HarvestUpdate, CropRead ,HarvestOut, HarvestBase
-from crud.harvest import create_crop, get_last_harvest, update_crop, delete_crop, create_harvest, delete_harvest, update_harvest
+from crud.harvest import create_crop, update_crop, delete_crop, create_harvest, delete_harvest, update_harvest
 from database.session import SessionLocal
 
 router = APIRouter()
@@ -63,14 +63,6 @@ def delete_crop_record(harvest_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Harvest not found")
     return {"message": "Harvest deleted successfully"}
 
-# Get last harvest
-@router.get("/last", response_model=HarvestOut)
-def read_crop(farmer_id: str, db: Session = Depends(get_db)):
-    """Retrieve a specific harvest record."""
-    harvest = get_last_harvest(db, farmer_id)
-    if not harvest:
-        raise HTTPException(status_code=404, detail="Harvest not found")
-    return harvest
 
 @router.put("/crops", response_model=CropRead)
 def update_crop_record(crop_id: str, harvest_update: HarvestUpdate, db: Session = Depends(get_db)):

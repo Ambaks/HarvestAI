@@ -1,15 +1,15 @@
 import React, { useContext, useEffect } from "react";
 import { Box } from "@mui/material";
 import { LineChart } from '@mui/x-charts/LineChart';
-import { useFetchUser } from "../api/authService";
-import { DataContext } from "../context/FarmerDataContext";
+import { useFetchUser } from "../../api/authService";
+import { DataContext } from "../../context/FarmerDataContext";
 import { Calendar, MapPin, Package, CheckCircle, Hourglass, FileText, CreditCard } from "lucide-react";
 import { lineElementClasses, markElementClasses } from '@mui/x-charts';
-import ScrollingDashboard from "../components/ScrollingDashboard";
-import ProfileCompletion from "../components/ProfileCompletion";
+import ScrollingDashboard from "../../components/ScrollingDashboard";
+import ProfileCompletion from "../../components/ProfileCompletion";
 
 
-const FarmerDash = () => {
+const ExporterDash = () => {
   const { user } = useFetchUser();
   const { earningsData, harvests, fetchHarvests } = useContext(DataContext);
   const chartData = {
@@ -32,12 +32,12 @@ const FarmerDash = () => {
         <div className="col-span-2 p-6 bg-white shadow-lg rounded-2xl flex items-center justify-between">
           <div className="space-y-10">
             <h1 className="text-3xl leading-relaxed font-bold">Welcome back,<br /> {user.first_name}</h1>
-            <p className="mt-2 text-gray-500">Start earning from your crops now!</p>
+            <p className="mt-2 text-gray-500">Start sourcing from farmers now!</p>
             <a
               href={`/farmer-dashboard/mycrops/${user.id}`}
-              className="mt-4 h-[85px] opacity-[80%] w-[240px] px-4 py-2 rounded-2xl border border-[rgba(0,0,0,0.1)] hover:bg-[#6058f6] shadow-lg bg-primary text-white transition-all duration-300 hover:scale-105 flex items-center justify-center"
+              className="mt-4 h-[85px] opacity-[80%] w-[240px] px-4 py-2 rounded-2xl border border-[rgba(0,0,0,0.1)] shadow-lg bg-primary text-white transition-all duration-300 flex items-center justify-center"
             >
-              Add Crops
+              View Crops
             </a>         
           </div>
 
@@ -139,27 +139,27 @@ const FarmerDash = () => {
           </h3>
           <p className="text-gray-600 flex items-center gap-2">
             <Calendar className="text-primary" size={18} /> 
-            <span className="font-semibold">Crop:</span> {harvests[harvests.length - 1]?.crop_name || "N/A"}
+            <span className="font-semibold">Crop:</span> {harvests[0]?.crop_name || "N/A"}
           </p>
           <p className="text-gray-600 flex items-center gap-2">
             <Calendar className="text-primary" size={18} /> 
-            <span className="font-semibold">Date:</span> {harvests[harvests.length - 1]?.harvest_date || "N/A"}
+            <span className="font-semibold">Date:</span> {harvests[0]?.harvest_date || "N/A"}
           </p>
           <p className="text-gray-600 flex items-center gap-2">
             <MapPin className="text-primary" size={18} /> 
-            <span className="font-semibold">Location:</span> {user?.location || "N/A"}
+            <span className="font-semibold">Location:</span> {harvests[0]?.location || "N/A"}
           </p>
           <p className="text-gray-600 flex items-center gap-2">
             <Package className="text-primary" size={18} /> 
-            <span className="font-semibold">Amount Harvested:</span> {harvests[harvests.length - 1]?.quantity ? `${harvests[harvests.length - 1].quantity} kg` : "N/A"}
+            <span className="font-semibold">Amount Harvested:</span> {harvests[0]?.quantity ? `${lastHarvest.quantity} kg` : "N/A"}
           </p>
           <p className="text-gray-600 flex items-center gap-2">
             <CheckCircle className="text-primary" size={18} /> 
-            <span className="font-semibold">Crop Quality:</span> {harvests[harvests.length - 1]?.quality || "N/A"}
+            <span className="font-semibold">Crop Quality:</span> {harvests[0]?.quality || "N/A"}
           </p>
           <p className="mt-3 text-gray-700 font-medium flex items-center gap-2">
             <FileText className="text-primary" size={18} /> 
-            Status: {harvests[harvests.length - 1]?.status || "N/A"}
+            Exporter: {harvests[0]?.exporter_name || "N/A"}
           </p>
         </div>
 
@@ -189,4 +189,4 @@ const FarmerDash = () => {
         );
       };
 
-export default FarmerDash;
+export default ExporterDash;

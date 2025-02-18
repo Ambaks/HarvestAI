@@ -3,8 +3,9 @@ from models.harvest import Crop, Harvest
 from models.user import User
 from schemas.harvest import CropBase, HarvestUpdate, HarvestBase
 from datetime import datetime
+import uuid
 
-# Create a new crop
+
 def create_crop(db: Session, crop: CropBase):
     # Convert string date to datetime object
     harvest_date = datetime.strptime(crop.date, "%Y-%m-%d")
@@ -18,7 +19,26 @@ def create_crop(db: Session, crop: CropBase):
     db.add(db_crop)
     db.commit()
     db.refresh(db_crop)
+    if harvested_status:
+        db_harvest = Harvest(farmer_id=crop.farmer_id, crop_id=str(uuid.uuid4()), crop_name=crop.crop_name, quantity=crop.quantity, quality=crop.quality, harvest_date=crop.date, status="Pending")
+        db.add(db_harvest)
+        db.commit()
+        db.refresh(db_harvest)
     return db_crop
+
+
+def create_harvest(db: Session, crop_id: str, harvest: HarvestBase):
+    # Update the current crop record
+    db_crop = db.query(Crop).filter(Crop.id == crop_id).first()
+    db_crop.harvested = True
+    # Create the harvest record
+    db_harvest = Harvest(**harvest.model_dump())
+    db.add(db_harvest)
+    db.commit()
+    db.refresh(db_crop)
+    db.refresh(db_harvest)
+    return db_harvest
+
 
 # Modify crop
 def update_crop(db: Session, crop_id: str, crop: HarvestUpdate):
@@ -50,18 +70,6 @@ def update_harvest(db: Session, harvest_id: str, crop: HarvestUpdate):
         return db_harvest
     print("Crop not found.")
 
-def create_harvest(db: Session, crop_id: str, harvest: HarvestBase):
-    # Update the current crop record
-    db_crop = db.query(Crop).filter(Crop.id == crop_id).first()
-    db_crop.harvested = True
-    # Create the harvest record
-    db_harvest = Harvest(**harvest.model_dump())
-    db.add(db_harvest)
-    db.commit()
-    db.refresh(db_crop)
-    db.refresh(db_harvest)
-    return db_harvest
-
 
 # Delete a crop by ID
 def delete_harvest(db: Session, harvest_id: int):
@@ -73,16 +81,11 @@ def delete_harvest(db: Session, harvest_id: int):
     return False
 
 
-# Get a farmer's last harvest
-def get_last_harvest(db: Session, farmer_id: str):
-    return db.query(Harvest).filter(User.user_id == farmer_id).first()
-
-
 # Get a crop by ID
 def get_crop(db: Session, harvest_id: int):
     return db.query(Crop).filter(Crop.id == harvest_id).first()
 
-# Get all crop
+# Get all crops
 def get_crops(db: Session):
     return db.query(Crop).all()
 
