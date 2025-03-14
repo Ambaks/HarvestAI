@@ -28,5 +28,6 @@ class User(Base):
     crops = relationship("Crop", back_populates="farmer", cascade="all, delete-orphan")
     farmer_transactions = relationship("Transaction", foreign_keys="[Transaction.farmer_id]", back_populates="farmer")
     exporter_transactions = relationship("Transaction", foreign_keys="[Transaction.exporter_id]", back_populates="exporter")
+    assigned_crops = relationship("ExporterCrop", back_populates="exporter")  # For exporters
 
 

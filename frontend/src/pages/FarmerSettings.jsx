@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import { UserContext } from "../context/UserContext";
 import { useParams } from "react-router-dom";
 import { useFetchUser } from "../api/authService";
 

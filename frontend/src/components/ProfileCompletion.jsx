@@ -62,7 +62,7 @@ const ProfileCompletion = () => {
           <p className="text-gray-500 text-sm pt-5 text-center font-medium">
             Your profile is incomplete! Complete it now to maximize your profit.
           </p>
-          <Link to={`/farmer-dashboard/settings/${user.id}`}>
+          <Link to={`/${user.role === "exporter" ? "exporter-dashboard" : "farmer-dashboard"}/settings/${user.id}`}>
             <button className="mt-4 px-5 py-2 bg-primary hover:scale-105 shadow-md shadow-gray-400 text-white rounded-full hover:bg-[#5147DB] transition">
               Complete Now
             </button>

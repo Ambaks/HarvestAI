@@ -34,7 +34,7 @@ const ExporterDash = () => {
             <h1 className="text-3xl leading-relaxed font-bold">Welcome back,<br /> {user.first_name}</h1>
             <p className="mt-2 text-gray-500">Start sourcing from farmers now!</p>
             <a
-              href={`/farmer-dashboard/mycrops/${user.id}`}
+              href={`/exporter-dashboard/mycrops/${user.id}`}
               className="mt-4 h-[85px] opacity-[80%] w-[240px] px-4 py-2 rounded-2xl border border-[rgba(0,0,0,0.1)] shadow-lg bg-primary text-white transition-all duration-300 flex items-center justify-center"
             >
               View Crops
@@ -113,14 +113,59 @@ const ExporterDash = () => {
                 {/* Dummy LineChart with placeholder data */}
                 <Box sx={{ width: "100%", height: "100%" }}>
                   <LineChart
-                    xAxis={[{ data: ["Week 1", "Week 2", "Week 3", "Week 4", "Week5"], scaleType: "point" }]}
+                    xAxis={[{ data: ["Week 1", "Week 2", "Week 3", "Week 4", "Week5"], 
+                              scaleType: "point",
+                              tickLabelStyle: { fill: "#A9A9A9", fontSize: 12 },
+                              stroke: "#D3D3D3",
+                              lineStyle: { stroke: "#D3D3D3" }}]}
+
                     series={[{ data: [50, 100, 130, 150, 220], showMark: true, color: "#635BFF", area: true }]}
-                    sx={{ width: "100%", height: "100%" }}
+
+                    sx={{
+                      width: "100%",
+                      height: "90%",
+                      [`& .${lineElementClasses.root}`]: {
+                        stroke: '#8884d8',
+                        strokeWidth: 2,
+                      },
+                      [`& .${markElementClasses.root}`]: {
+                        stroke: '#8884d8',
+                        scale: '0.6',
+                        fill: '#fff',
+                        strokeWidth: 2,
+                      },
+                      "& .MuiChartsAxis-root line": {
+                        stroke: "transparent", // Hide all axis lines (y-axis)
+                      },
+                      "& .MuiChartsAxis-root text": {
+                        fill: "#000000", // Light gray labels
+                      },
+                      "& .MuiChartsGrid-line": {
+                        stroke: "#000000", // Light gray horizontal lines
+                        strokeDasharray: "4 4", // Optional dashed style
+                      },
+                    }}
+
+                    yAxis={[
+                      {
+                        tickLabelStyle: { fill: "#000000", fontSize: 12 }, // Keep value labels
+                        stroke: "transparent", // Hide vertical y-axis
+                        lineStyle: { stroke: "transparent" }, // Ensure no axis line
+                      },
+                    ]}
+
+                    grid={{
+                      horizontal: true, // Enable only horizontal grid lines
+                      vertical: false, // Disable vertical grid lines
+                      stroke: "#D3D3D3", // Light gray color
+                      strokeDasharray: "4 4", // Dashed lines
+                    }}
+
                   />
                 </Box>
                 {/* Watermark overlay */}
                   <div className="absolute mb-[20px] inset-0 flex items-center justify-center bg-white bg-opacity-85">
-                    <p className="text-[#000] text-xs font-semibold text-center">
+                    <p className="text-black text-xs font-semibold text-center">
                       Sell your first crops to see your earnings appear here!
                     </p>
                 </div>
@@ -159,7 +204,7 @@ const ExporterDash = () => {
           </p>
           <p className="mt-3 text-gray-700 font-medium flex items-center gap-2">
             <FileText className="text-primary" size={18} /> 
-            Exporter: {harvests[0]?.exporter_name || "N/A"}
+            Farmer: {harvests[0]?.exporter_name || "N/A"}
           </p>
         </div>
 

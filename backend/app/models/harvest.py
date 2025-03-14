@@ -1,7 +1,7 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Date, Float, Boolean
+from sqlalchemy import Column, Integer, String, ForeignKey, Date, Float, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from database.base import Base
-from datetime import date
+from datetime import datetime
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -15,9 +15,11 @@ class Crop(Base):
     date = Column(String, nullable=False)
     quality = Column(String, nullable=True)  # Optional crop quality rating
     harvested = Column(Boolean, nullable = True, default=False)
-    status = Column(String, nullable=False, default="Available", server_default="Available")    
+    status = Column(String, nullable=False, default="Available", server_default="Available")  
+
     # Relationships
     farmer = relationship("User", foreign_keys=[farmer_id], back_populates="crops")
+    exporters = relationship("ExporterCrop", back_populates="crop")
  
 class Harvest(Base):
     __tablename__ = "harvests"
@@ -33,3 +35,14 @@ class Harvest(Base):
 
     farmer = relationship("User", foreign_keys=[farmer_id], back_populates="harvests")
 
+class ExporterCrop(Base):
+    __tablename__ = "exporter_crops"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    exporter_id = Column(String, ForeignKey("users.user_id"), nullable=False)  
+    crop_id = Column(String, ForeignKey("crops.id"), nullable=False)
+    status = Column(String, nullable=False, default="Pending", server_default="Pending")  
+    assigned_at = Column(DateTime, default=datetime.now)  # Timestamp for assignment
+
+    exporter = relationship("User", foreign_keys=[exporter_id], back_populates="assigned_crops")
+    crop = relationship("Crop", foreign_keys=[crop_id], back_populates="exporters")

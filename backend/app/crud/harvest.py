@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
-from models.harvest import Crop, Harvest
+from models.harvest import Crop, Harvest, ExporterCrop
 from models.user import User
 from schemas.harvest import CropBase, HarvestUpdate, HarvestBase
+from schemas.ExporterCrops import ExporterCropCreate
 from datetime import datetime
 import uuid
 
@@ -97,3 +98,45 @@ def delete_crop(db: Session, harvest_id: int):
         db.commit()
         return True
     return False
+
+
+'''UPCOMING HARVESTS SECTION'''
+
+import schemas
+import uuid
+from datetime import datetime
+
+def assign_crop_to_exporter(db: Session, exporter_crop: ExporterCropCreate):
+    """Assigns a crop to an exporter."""
+    db_exporter_crop = ExporterCrop(
+        id=str(uuid.uuid4()),
+        exporter_id=exporter_crop.exporter_id,
+        crop_id=exporter_crop.crop_id,
+        status="Pending",
+        assigned_at=datetime.utcnow(),
+    )
+    db.add(db_exporter_crop)
+    db.commit()
+    db.refresh(db_exporter_crop)
+    return db_exporter_crop
+
+def get_exporter_crops(db: Session, exporter_id: str):
+    """Gets all crops assigned to a specific exporter."""
+    return db.query(ExporterCrop).filter(ExporterCrop.exporter_id == exporter_id).all()
+
+def update_exporter_crop_status(db: Session, exporter_crop_id: str, status: str):
+    """Updates the status of an assigned crop (e.g., Pending → Completed)."""
+    db_exporter_crop = db.query(ExporterCrop).filter(ExporterCrop.id == exporter_crop_id).first()
+    if db_exporter_crop:
+        db_exporter_crop.status = status
+        db.commit()
+        db.refresh(db_exporter_crop)
+    return db_exporter_crop
+
+def delete_exporter_crop(db: Session, exporter_crop_id: str):
+    """Removes an assignment (if canceled or invalid)."""
+    db_exporter_crop = db.query(ExporterCrop).filter(ExporterCrop.id == exporter_crop_id).first()
+    if db_exporter_crop:
+        db.delete(db_exporter_crop)
+        db.commit()
+    return db_exporter_crop

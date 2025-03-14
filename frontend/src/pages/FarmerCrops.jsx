@@ -46,9 +46,6 @@ const FarmerCrops = () => {
     formData.append("crop_name", cropName);
     formData.append("quality", cropQuality);
 
-
-
-
     try {
       const response = await axios.post(`${API_BASE_URL}/harvests/crops/new`, // Replace with your actual backend API
         formData,
@@ -96,6 +93,7 @@ const FarmerCrops = () => {
     }
   };
 
+
   const handleHarvestEdit = async () => {
     try {
       const updatedHarvestData = {
@@ -132,6 +130,7 @@ const FarmerCrops = () => {
     }
   };
 
+
   const handleHarvestDelete = async () => {
     try {
       await axios.delete(`${API_BASE_URL}/harvests`, {withCredentials: true, // Ensure HTTP-only cookies are sent
@@ -142,7 +141,6 @@ const FarmerCrops = () => {
       console.error("Error deleting crop:", error);
     }
   };
-
 
 
   const handleHarvestNow = async (crop) => {
@@ -170,6 +168,7 @@ const FarmerCrops = () => {
       console.error("Error harvesting crop:", error);
     }
   };
+
 
   return (
     <div >

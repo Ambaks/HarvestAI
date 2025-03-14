@@ -15,7 +15,18 @@ export const DataProvider = ({ children }) => {
     const [loadingCrops, setLoadingCrops] = useState(true); // Tracks session validation status
     const [earningsData, setEarningsData] = useState([]);
     const [orders, setOrders] = useState([]);
+    const [exporterCrops, setExporterCrops] = useState([]);
 
+    const fetchExporterCrops = async () => {
+      try {
+        console.log("Fetching exporter crops...");
+        const res = await axios.get(`${API_BASE_URL}/exporter-crops/${user?.id}`, { withCredentials: true });
+        setExporterCrops(res.data);
+        console.log("Exporter crops found: ", res.data)
+      } catch (error) {
+          console.error("Error fetching exporter crops:", error);
+      }
+  };
 
     const fetchCrops = async () => {
         try {
@@ -113,14 +124,15 @@ export const DataProvider = ({ children }) => {
     useEffect(() => {
         if (!user) return;
         fetchCrops();
-        fetchTransactions(); // Now fetching transactions too
+        fetchTransactions(); 
         fetchEarnings();
         fetchOrders();
         fetchHarvests();
+        fetchExporterCrops();
     }, [user?.id]);
 
   return (
-    <DataContext.Provider value={{crops, setCrops, loadingCrops, fetchCrops, fetchOrders, fetchTransactions, orders, setOrders, transactions, setTransactions, loadingTransactions, earningsData, setEarningsData, fetchEarnings, updateOrderStatus, fetchHarvests, harvests, setHarvests, resetData}}>
+    <DataContext.Provider value={{crops, setCrops, loadingCrops, fetchCrops, fetchOrders, fetchTransactions, orders, setOrders, transactions, setTransactions, loadingTransactions, earningsData, setEarningsData, fetchEarnings, updateOrderStatus, fetchHarvests, harvests, setHarvests, resetData, exporterCrops, setExporterCrops, fetchExporterCrops}}>
         {children}  
     </DataContext.Provider>
   );
