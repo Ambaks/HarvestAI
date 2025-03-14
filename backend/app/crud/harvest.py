@@ -121,8 +121,23 @@ def assign_crop_to_exporter(db: Session, exporter_crop: ExporterCropCreate):
     return db_exporter_crop
 
 def get_exporter_crops(db: Session, exporter_id: str):
-    """Gets all crops assigned to a specific exporter."""
-    return db.query(ExporterCrop).filter(ExporterCrop.exporter_id == exporter_id).all()
+    """Gets all crops assigned to a specific exporter and fetches the latest crop details."""
+    exporter_crops = db.query(ExporterCrop).filter(ExporterCrop.exporter_id == exporter_id).all()
+    
+    final_exporter_crops = []
+    
+    for item in exporter_crops:
+        crop = db.query(Crop).filter(Crop.id == item.crop_id).first()  # Fetch latest crop details
+        if crop:
+            final_exporter_crops.append({
+                "supplier": crop.farmer_id,
+                "crop": crop.name,
+                "yield": crop.quantity,
+                "availability": crop.date,
+                "crop_id": crop.id,  # Keeping crop_id in case it's needed
+            })
+    
+    return final_exporter_crops
 
 def update_exporter_crop_status(db: Session, exporter_crop_id: str, status: str):
     """Updates the status of an assigned crop (e.g., Pending → Completed)."""
