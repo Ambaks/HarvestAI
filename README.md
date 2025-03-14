@@ -9,3 +9,8 @@ MUST have npm installed
 5. run "uvicorn main:app --reload" in another terminal, within backend/app directory.
 
 That's it!
+
+<img width="1106" alt="Screenshot 2025-03-14 at 16 00 21" src="https://github.com/user-attachments/assets/a2d1ca8d-aa59-4da0-9ba7-c66f5cdf2d59" />
+
+
+<img width="1436" alt="Screenshot 2025-03-14 at 16 01 02" src="https://github.com/user-attachments/assets/1128898c-7540-464c-9f9e-9963fac7461d" />
