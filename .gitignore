@@ -5,7 +5,7 @@ Thumbs.db
 
 # Logs
 logs
-frontend/*.log
+*.log
 frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
@@ -31,5 +31,7 @@ frontend/*.local
 venv/
 .venv/
 
-*.log
+*.pyc
+*.pyo
+__pycache__/
 *.cache
