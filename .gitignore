@@ -1,7 +1,18 @@
 # General OS/System files
 .DS_Store
-test.db
 Thumbs.db
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+test.db
+backend/app/test.db
+
+# Environment files
+.env
+backend/.env
+frontend/.env
 
 # Logs
 logs

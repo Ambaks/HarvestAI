@@ -10,6 +10,9 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    ENVIRONMENT: str = "development"
+    SECURE_COOKIES: bool = False
+    ALLOWED_ORIGINS: str = "http://localhost:5173"
 
     class Config:
         env_file = ".env"  # Path to the .env file

@@ -3,7 +3,7 @@ from models.harvest import Crop, Harvest, ExporterCrop
 from models.user import User
 from schemas.harvest import CropBase, HarvestUpdate, HarvestBase
 from schemas.ExporterCrops import ExporterCropCreate
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 
 
@@ -113,7 +113,7 @@ def assign_crop_to_exporter(db: Session, exporter_crop: ExporterCropCreate):
         exporter_id=exporter_crop.exporter_id,
         crop_id=exporter_crop.crop_id,
         status="Pending",
-        assigned_at=datetime.utcnow(),
+        assigned_at=datetime.now(timezone.utc),
     )
     db.add(db_exporter_crop)
     db.commit()
@@ -131,10 +131,10 @@ def get_exporter_crops(db: Session, exporter_id: str):
         if crop:
             final_exporter_crops.append({
                 "supplier": crop.farmer_id,
-                "crop": crop.name,
+                "crop": crop.crop_name,
                 "yield": crop.quantity,
                 "availability": crop.date,
-                "crop_id": crop.id,  # Keeping crop_id in case it's needed
+                "crop_id": crop.id,
             })
     
     return final_exporter_crops

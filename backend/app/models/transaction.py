@@ -6,7 +6,7 @@ from uuid import UUID, uuid4
 
 class Transaction(Base):
     __tablename__ = "transactions"
-    id = Column(String, primary_key=True, default=uuid4)
+    id = Column(String, primary_key=True, default=lambda: str(uuid4()))
     harvest_id = Column(String, ForeignKey("crops.id"))  # Assuming harvests are recorded in the crops table
     farmer_id = Column(String, ForeignKey("users.user_id"))  # Farmers are users
     exporter_id = Column(String, ForeignKey("users.user_id"))  # Exporters are users

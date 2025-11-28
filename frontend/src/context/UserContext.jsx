@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/Spinner";
+import { logger } from "../utils/logger";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; 
 
@@ -23,7 +24,7 @@ export const UserProvider = ({ children }) => {
         setIsAuthenticated(true);
         setUser(response.data); // Set user info in the context
       } catch (error) {
-        console.error("Session validation failed:", error.response?.data);
+        logger.error("Session validation failed:", error.response?.data);
         setUser(null); // Clear user info on validation failure
         setIsAuthenticated(false);
        

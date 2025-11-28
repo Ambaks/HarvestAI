@@ -8,6 +8,7 @@ from api.dependencies import get_db
 from schemas.auth import LoginRequest, RegisterRequest
 from models.user import User
 from schemas.user import UserOut
+from config import settings
 
 router = APIRouter()
 
@@ -39,7 +40,7 @@ def login(request: LoginRequest, response: Response, db: Session = Depends(get_d
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=False,  # Set to True for production (HTTPS)
+        secure=settings.SECURE_COOKIES,  # Uses environment variable (True in production)
         samesite="Lax"
     )
 

@@ -1,11 +1,12 @@
 import { FaLock, FaUser } from "react-icons/fa";
 import React, { useContext, useState, useEffect } from "react";
-import styles from "../LoginRegister.module.css"; // Import the CSS module
+import styles from "../LoginRegister.module.css";
 import HeaderBlank from "../components/HeaderBlank";
 import { useNavigate } from "react-router-dom";
 import { login, register } from "../api/authService";
 import { UserContext } from "../context/UserContext";
 import axios from 'axios';
+import { logger } from "../utils/logger";
 
 
 const Login = () => {
@@ -26,7 +27,7 @@ const Login = () => {
         const response = await axios.get("/auth/validate", { withCredentials: true });
         setUser(response.data);
       } catch (error) {
-        console.error("Session validation failed:", error.response?.data);
+        logger.error("Session validation failed:", error.response?.data);
         setUser(null);
       }
     };
@@ -61,7 +62,7 @@ const Login = () => {
       const { user_info } = await login(email, password);
       setUser(user_info); // Save full user info to context.
     } catch (error) {
-      console.error("Login error:", error);
+      logger.error("Login error:", error);
       setError("Invalid username or password");
     }
   };
@@ -86,7 +87,7 @@ const Login = () => {
             <h1 className={styles.h1}>Login</h1>
             <div className={styles["input-box"]}>
               <input
-                type="text"
+                type="email"
                 value={email}
                 placeholder="Enter e-mail:"
                 required
@@ -135,7 +136,7 @@ const Login = () => {
               <FaUser className={styles.icon} />
             </div>
             <div className={styles["input-box"]}>
-              <input type="text" placeholder="E-mail:" onChange={(e) => setEmail(e.target.value)} required />
+              <input type="email" placeholder="E-mail:" onChange={(e) => setEmail(e.target.value)} required />
               <FaUser className={styles.icon} />
             </div>
             <div className={styles["input-box"]}>

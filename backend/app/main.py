@@ -3,21 +3,25 @@ from fastapi.middleware.cors import CORSMiddleware
 from api.routers import api_router  # Absolute import for the routers
 from database import base
 from database.session import engine
+from config import settings
 
 # Initialize the FastAPI app
 app = FastAPI(
-    title="Avocado Supply Chain API",
-    description="API to manage the avocado supply chain, including harvests, farmers, exporters, and transactions.",
+    title="HarvestAI Supply Chain API",
+    description="API to manage the agricultural supply chain, including harvests, farmers, exporters, and transactions.",
     version="1.0.0",
 )
 
-# Allow cross-origin requests from all origins (you can customize this if needed)
+# Parse allowed origins from config
+allowed_origins = [origin.strip() for origin in settings.ALLOWED_ORIGINS.split(",")]
+
+# Allow cross-origin requests from configured origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Allows all origins
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],  # Allows needed HTTP methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Include the routers for various resources (Harvest, Farmers, Exporters, Transactions)
